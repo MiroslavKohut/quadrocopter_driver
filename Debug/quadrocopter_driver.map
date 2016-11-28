@@ -1414,6 +1414,8 @@ Discarded input sections
  .bss           0x00000000        0x0 src\functions.o
  .text.USART_send_function
                 0x00000000       0x68 src\functions.o
+ .text.SPI1_send
+                0x00000000       0x58 src\functions.o
  .text          0x00000000        0x0 src\main.o
  .data          0x00000000        0x0 src\main.o
  .bss           0x00000000        0x0 src\main.o
@@ -1902,31 +1904,31 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib
                 0x000002ba       0x1d c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7-m/crtn.o
 OUTPUT(quadrocopter_driver.elf elf32-littlearm)
 
-.debug_info     0x00000000     0x3e80
+.debug_info     0x00000000     0x3ea8
  .debug_info    0x00000000      0x65f Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
  .debug_info    0x0000065f      0xa29 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.o
  .debug_info    0x00001088      0x8f3 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.o
  .debug_info    0x0000197b      0x9ce Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_usart.o
- .debug_info    0x00002349      0x6b5 src\functions.o
- .debug_info    0x000029fe      0x18d src\main.o
- .debug_info    0x00002b8b       0x8f src\startup_stm32l1xx_hd.o
- .debug_info    0x00002c1a      0x133 src\stm32l1xx_it.o
- .debug_info    0x00002d4d      0x568 src\system_stm32l1xx.o
- .debug_info    0x000032b5      0xbcb src\tiny_printf.o
+ .debug_info    0x00002349      0x6dd src\functions.o
+ .debug_info    0x00002a26      0x18d src\main.o
+ .debug_info    0x00002bb3       0x8f src\startup_stm32l1xx_hd.o
+ .debug_info    0x00002c42      0x133 src\stm32l1xx_it.o
+ .debug_info    0x00002d75      0x568 src\system_stm32l1xx.o
+ .debug_info    0x000032dd      0xbcb src\tiny_printf.o
 
-.debug_abbrev   0x00000000      0xca7
+.debug_abbrev   0x00000000      0xcc3
  .debug_abbrev  0x00000000      0x1a9 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
  .debug_abbrev  0x000001a9      0x1e7 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.o
  .debug_abbrev  0x00000390      0x182 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.o
  .debug_abbrev  0x00000512      0x159 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_usart.o
- .debug_abbrev  0x0000066b      0x14d src\functions.o
- .debug_abbrev  0x000007b8       0xe5 src\main.o
- .debug_abbrev  0x0000089d       0x12 src\startup_stm32l1xx_hd.o
- .debug_abbrev  0x000008af       0x67 src\stm32l1xx_it.o
- .debug_abbrev  0x00000916      0x149 src\system_stm32l1xx.o
- .debug_abbrev  0x00000a5f      0x248 src\tiny_printf.o
+ .debug_abbrev  0x0000066b      0x169 src\functions.o
+ .debug_abbrev  0x000007d4       0xe5 src\main.o
+ .debug_abbrev  0x000008b9       0x12 src\startup_stm32l1xx_hd.o
+ .debug_abbrev  0x000008cb       0x67 src\stm32l1xx_it.o
+ .debug_abbrev  0x00000932      0x149 src\system_stm32l1xx.o
+ .debug_abbrev  0x00000a7b      0x248 src\tiny_printf.o
 
-.debug_aranges  0x00000000      0x520
+.debug_aranges  0x00000000      0x528
  .debug_aranges
                 0x00000000       0x88 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
  .debug_aranges
@@ -1936,43 +1938,43 @@ OUTPUT(quadrocopter_driver.elf elf32-littlearm)
  .debug_aranges
                 0x000002a0      0x100 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_usart.o
  .debug_aranges
-                0x000003a0       0x38 src\functions.o
+                0x000003a0       0x40 src\functions.o
  .debug_aranges
-                0x000003d8       0x30 src\main.o
+                0x000003e0       0x30 src\main.o
  .debug_aranges
-                0x00000408       0x28 src\startup_stm32l1xx_hd.o
+                0x00000410       0x28 src\startup_stm32l1xx_hd.o
  .debug_aranges
-                0x00000430       0x60 src\stm32l1xx_it.o
+                0x00000438       0x60 src\stm32l1xx_it.o
  .debug_aranges
-                0x00000490       0x30 src\system_stm32l1xx.o
+                0x00000498       0x30 src\system_stm32l1xx.o
  .debug_aranges
-                0x000004c0       0x60 src\tiny_printf.o
+                0x000004c8       0x60 src\tiny_printf.o
 
-.debug_ranges   0x00000000      0x488
+.debug_ranges   0x00000000      0x490
  .debug_ranges  0x00000000       0x78 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
  .debug_ranges  0x00000078      0x138 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.o
  .debug_ranges  0x000001b0       0xc0 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.o
  .debug_ranges  0x00000270       0xf0 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_usart.o
- .debug_ranges  0x00000360       0x28 src\functions.o
- .debug_ranges  0x00000388       0x20 src\main.o
- .debug_ranges  0x000003a8       0x20 src\startup_stm32l1xx_hd.o
- .debug_ranges  0x000003c8       0x50 src\stm32l1xx_it.o
- .debug_ranges  0x00000418       0x20 src\system_stm32l1xx.o
- .debug_ranges  0x00000438       0x50 src\tiny_printf.o
+ .debug_ranges  0x00000360       0x30 src\functions.o
+ .debug_ranges  0x00000390       0x20 src\main.o
+ .debug_ranges  0x000003b0       0x20 src\startup_stm32l1xx_hd.o
+ .debug_ranges  0x000003d0       0x50 src\stm32l1xx_it.o
+ .debug_ranges  0x00000420       0x20 src\system_stm32l1xx.o
+ .debug_ranges  0x00000440       0x50 src\tiny_printf.o
 
-.debug_line     0x00000000     0x1c8a
+.debug_line     0x00000000     0x1cb5
  .debug_line    0x00000000      0x35d Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
  .debug_line    0x0000035d      0x521 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.o
  .debug_line    0x0000087e      0x427 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.o
  .debug_line    0x00000ca5      0x4af Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_usart.o
- .debug_line    0x00001154      0x281 src\functions.o
- .debug_line    0x000013d5      0x17f src\main.o
- .debug_line    0x00001554       0x7c src\startup_stm32l1xx_hd.o
- .debug_line    0x000015d0      0x1e7 src\stm32l1xx_it.o
- .debug_line    0x000017b7      0x21a src\system_stm32l1xx.o
- .debug_line    0x000019d1      0x2b9 src\tiny_printf.o
+ .debug_line    0x00001154      0x2ac src\functions.o
+ .debug_line    0x00001400      0x17f src\main.o
+ .debug_line    0x0000157f       0x7c src\startup_stm32l1xx_hd.o
+ .debug_line    0x000015fb      0x1e7 src\stm32l1xx_it.o
+ .debug_line    0x000017e2      0x21a src\system_stm32l1xx.o
+ .debug_line    0x000019fc      0x2b9 src\tiny_printf.o
 
-.debug_str      0x00000000     0x1896
+.debug_str      0x00000000     0x18a0
  .debug_str     0x00000000      0x4d0 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
                                 0x526 (size before relaxing)
  .debug_str     0x000004d0      0x539 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.o
@@ -1981,15 +1983,15 @@ OUTPUT(quadrocopter_driver.elf elf32-littlearm)
                                 0x657 (size before relaxing)
  .debug_str     0x00000db3      0x423 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_usart.o
                                 0x6ea (size before relaxing)
- .debug_str     0x000011d6       0x92 src\functions.o
-                                0x5b2 (size before relaxing)
- .debug_str     0x00001268       0x45 src\main.o
+ .debug_str     0x000011d6       0x9c src\functions.o
+                                0x5c1 (size before relaxing)
+ .debug_str     0x00001272       0x45 src\main.o
                                 0x203 (size before relaxing)
- .debug_str     0x000012ad       0xa6 src\stm32l1xx_it.o
+ .debug_str     0x000012b7       0xa6 src\stm32l1xx_it.o
                                 0x236 (size before relaxing)
- .debug_str     0x00001353      0x102 src\system_stm32l1xx.o
+ .debug_str     0x0000135d      0x102 src\system_stm32l1xx.o
                                 0x395 (size before relaxing)
- .debug_str     0x00001455      0x441 src\tiny_printf.o
+ .debug_str     0x0000145f      0x441 src\tiny_printf.o
                                 0x601 (size before relaxing)
 
 .comment        0x00000000       0x7e
@@ -2004,17 +2006,17 @@ OUTPUT(quadrocopter_driver.elf elf32-littlearm)
  .comment       0x0000007e       0x7f src\system_stm32l1xx.o
  .comment       0x0000007e       0x7f src\tiny_printf.o
 
-.debug_frame    0x00000000     0x14d8
+.debug_frame    0x00000000     0x1500
  .debug_frame   0x00000000      0x23c Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
  .debug_frame   0x0000023c      0x5e4 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.o
  .debug_frame   0x00000820      0x3a0 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.o
  .debug_frame   0x00000bc0      0x490 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_usart.o
- .debug_frame   0x00001050       0xa4 src\functions.o
- .debug_frame   0x000010f4       0x70 src\main.o
- .debug_frame   0x00001164      0x110 src\stm32l1xx_it.o
- .debug_frame   0x00001274       0x7c src\system_stm32l1xx.o
- .debug_frame   0x000012f0      0x1bc src\tiny_printf.o
- .debug_frame   0x000014ac       0x2c c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7-m\libc_nano.a(lib_a-init.o)
+ .debug_frame   0x00001050       0xcc src\functions.o
+ .debug_frame   0x0000111c       0x70 src\main.o
+ .debug_frame   0x0000118c      0x110 src\stm32l1xx_it.o
+ .debug_frame   0x0000129c       0x7c src\system_stm32l1xx.o
+ .debug_frame   0x00001318      0x1bc src\tiny_printf.o
+ .debug_frame   0x000014d4       0x2c c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7-m\libc_nano.a(lib_a-init.o)
 
 .stabstr        0x00000000       0x3f
  .stabstr       0x00000000       0x3f c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/../../../../arm-atollic-eabi/lib/armv7-m\libnosys.a(write.o)
@@ -2495,6 +2497,7 @@ SDIO_StopSDIOReadWait                             Libraries\STM32L1xx_StdPeriph_
 SDIO_StructInit                                   Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_sdio.o
 SDIO_WriteData                                    Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_sdio.o
 SPI1_IRQHandler                                   src\startup_stm32l1xx_hd.o
+SPI1_send                                         src\functions.o
 SPI2_IRQHandler                                   src\startup_stm32l1xx_hd.o
 SPI3_IRQHandler                                   src\startup_stm32l1xx_hd.o
 SPI_BiDirectionalLineConfig                       Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.o
