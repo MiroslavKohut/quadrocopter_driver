@@ -53,6 +53,9 @@ uint64_t c;
 */
 int main(void)
 {
+	/*initializations*/
+
+	init_SPI1();
 	usart_init();
 
 
