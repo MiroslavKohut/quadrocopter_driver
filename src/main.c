@@ -58,15 +58,18 @@ int main(void)
 	init_SPI1();
 	usart_init();
 
+	//Start SPI low chipselect bit
+	//GPIOA->BSRRH |= GPIO_Pin_8;
 
-  /* Infinite loop */
-  while (1)
-  {
-	  for(c = 0; c < 50000;c++);
-	  //USART_send_function("Test_USART");
-	  USART_send_function_number(30.895);
-  }
-  return 0;
+
+	/* Infinite loop */
+	while (1)
+	{
+		//for(c = 0; c < 50000;c++);
+		//USART_send_function("Test_USART");
+		USART_send_function_number(SPI1_receive_send(TEMP_OUT_H));
+	}
+	return 0;
 }
 
 #ifdef  USE_FULL_ASSERT

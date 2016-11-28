@@ -96,7 +96,6 @@ void init_SPI1(void){
 
 	/* Configure the chip select pin
 	   in this case we will use PA8 */
-
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
@@ -104,11 +103,9 @@ void init_SPI1(void){
 	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-	GPIOE->BSRRL |= GPIO_Pin_8; // set PA8 high
-
+	GPIOA->BSRRL |= GPIO_Pin_8; // set PA8 high
 	// enable peripheral clock
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
-
 	/* configure SPI1 in Mode 0
 	 * CPOL = 0 --> clock is low when idle
 	 * CPHA = 0 --> data is sampled at the first edge
@@ -116,10 +113,12 @@ void init_SPI1(void){
 	SPI_InitStruct.SPI_Direction = SPI_Direction_2Lines_FullDuplex; // set to full duplex mode, seperate MOSI and MISO lines
 	SPI_InitStruct.SPI_Mode = SPI_Mode_Master;     // transmit in master mode, NSS pin has to be always high
 	SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b; // one packet of data is 8 bits wide
+	SPI_InitStruct.SPI_CRCPolynomial = SPI_CRC_Rx;
 	SPI_InitStruct.SPI_CPOL = SPI_CPOL_Low;        // clock is low when idle
 	SPI_InitStruct.SPI_CPHA = SPI_CPHA_1Edge;      // data sampled at first edge
-	SPI_InitStruct.SPI_NSS = SPI_NSS_Soft | SPI_NSSInternalSoft_Set; // set the NSS management to internal and pull internal NSS high
-	SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4; // SPI frequency is APB2 frequency / 4
+	//SPI_InitStruct.SPI_NSS = SPI_NSS_Soft | SPI_NSSInternalSoft_Set; // set the NSS management to internal and pull internal NSS high
+	SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
+	SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2; // SPI frequency is APB2 frequency / 32 changed by Miroslav Kohut
 	SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;// data is transmitted MSB first
 	SPI_Init(SPI1, &SPI_InitStruct);
 
@@ -128,11 +127,28 @@ void init_SPI1(void){
 
 uint8_t SPI1_receive_send(uint8_t data){
 
+	SPI1->DR = data;
+	// wait until TXE = 1
+	while(SPI_I2S_GetFlagStatus(SPI1,SPI_I2S_FLAG_TXE) != SET);
+	// wait until RXNE = 1
+	while(SPI_I2S_GetFlagStatus(SPI1,SPI_I2S_FLAG_RXNE) != SET);
+	// read the rx buff to clear the RXNE flag (garbage)
+	unsigned char  rxData = SPI1->DR;
+	return rxData;
+
+
+	/*
 	SPI1->DR = data;                         // write data to be transmitted to the SPI data register
 	while( !(SPI1->SR & SPI_I2S_FLAG_TXE) ); // wait until transmit complete
 	while( !(SPI1->SR & SPI_I2S_FLAG_RXNE) );// wait until receive complete
-	while( SPI1->SR & SPI_I2S_FLAG_BSY );    // wait until SPI is not busy anymore
+	while( SPI1->SR & SPI_I2S_FLAG_BSY );
+
+	SPI1->DR = 0x00;                         // write data to be transmitted to the SPI data register
+	while( !(SPI1->SR & SPI_I2S_FLAG_TXE) ); // wait until transmit complete
+	while( !(SPI1->SR & SPI_I2S_FLAG_RXNE) );// wait until receive complete
+	while( SPI1->SR & SPI_I2S_FLAG_BSY );  											// wait until SPI is not busy anymore
 	return SPI1->DR;                         // return received data from SPI data register
+*/
 }
 
 
