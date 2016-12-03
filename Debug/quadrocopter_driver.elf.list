@@ -2010,10 +2010,10 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG)
  8000e0a:	bf00      	nop
 
 08000e0c <usart_init>:
+ *      Author: Asus
+ */
 /* Includes */
 #include <functions.h>
-
-
 
 void usart_init(){
  8000e0c:	b580      	push	{r7, lr}
@@ -2415,6 +2415,7 @@ uint16_t read_reg( uint8_t WriteAddr)
  8001090:	40013000 	.word	0x40013000
 
 08001094 <chip_select>:
+
 void chip_select(void){
  8001094:	b580      	push	{r7, lr}
  8001096:	af00      	add	r7, sp, #0

@@ -7,8 +7,6 @@
 /* Includes */
 #include <functions.h>
 
-
-
 void usart_init(){
 
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
@@ -148,6 +146,7 @@ uint16_t read_reg( uint8_t WriteAddr)
 	chip_deselect();
 	return  SPI_I2S_ReceiveData(SPI1);
 }
+
 void chip_select(void){
 	GPIO_ResetBits(GPIOA, GPIO_Pin_8);
 }

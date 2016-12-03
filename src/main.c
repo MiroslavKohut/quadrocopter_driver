@@ -27,6 +27,7 @@ SOFTWARE.
 */
 //Includes
 #include <functions.h>
+#include <MPU_9250.h>
 
 /* Private typedef */
 

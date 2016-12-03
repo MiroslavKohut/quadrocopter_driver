@@ -1399,6 +1399,18 @@ Discarded input sections
  .debug_frame   0x00000000      0x134 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_wwdg.o
  .ARM.attributes
                 0x00000000       0x33 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_wwdg.o
+ .text          0x00000000        0x0 src\MPU_9250.o
+ .data          0x00000000        0x0 src\MPU_9250.o
+ .bss           0x00000000        0x0 src\MPU_9250.o
+ .debug_info    0x00000000       0xa0 src\MPU_9250.o
+ .debug_abbrev  0x00000000       0x4b src\MPU_9250.o
+ .debug_aranges
+                0x00000000       0x18 src\MPU_9250.o
+ .debug_line    0x00000000      0x127 src\MPU_9250.o
+ .debug_str     0x00000000      0x1b3 src\MPU_9250.o
+ .comment       0x00000000       0x7f src\MPU_9250.o
+ .ARM.attributes
+                0x00000000       0x33 src\MPU_9250.o
  .text          0x00000000        0x0 src\functions.o
  .data          0x00000000        0x0 src\functions.o
  .bss           0x00000000        0x0 src\functions.o
@@ -1521,6 +1533,7 @@ LOAD Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_syscfg.o
 LOAD Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_tim.o
 LOAD Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_usart.o
 LOAD Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_wwdg.o
+LOAD src\MPU_9250.o
 LOAD src\functions.o
 LOAD src\main.o
 LOAD src\startup_stm32l1xx_hd.o
