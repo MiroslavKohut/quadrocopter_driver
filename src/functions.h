@@ -40,7 +40,7 @@ void sleep(uint64_t time);
 
 void chip_select(void);
 void chip_deselect(void);
-uint16_t  read_reg( uint8_t WriteAddr);
+uint8_t  read_reg( uint8_t WriteAddr);
 void read_regs( uint8_t ReadAddr, uint8_t *ReadBuf, unsigned int Bytes );
 void write_reg( uint8_t WriteAddr, uint8_t WriteData);
 

@@ -54,8 +54,14 @@ void USART_send_function_number(float number){
 
 	uint16_t i = 0;
 	char text[20];
-	uint16_t num1 = (uint16_t)number;
-	sprintf(text,"%d.%d", num1, (uint16_t)((number-num1)*1000));
+	int num1 = (int)number;
+	int num2 = (int)((number-num1)*1000);
+	if (num2 > 0)
+		sprintf(text,"%d.%d", num1, num2);
+	else{
+		num2=num2*-1;
+		sprintf(text,"%d.%d", num1, num2);
+	}
 	while(text[i] != '\0'){
 		USART_SendData(USART2, text[i]);
 		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
@@ -105,7 +111,7 @@ void init_SPI1(void){
 	SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b; // one packet of data is 8 bits wide
 	//SPI_InitStruct.SPI_CRCPolynomial = SPI_CRC_Rx;
 	SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;        // clock is high when idle
-	SPI_InitStruct.SPI_CPHA = SPI_CPHA_1Edge;      // data sampled at first edge
+	SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;      // data sampled at first edge
 	//SPI_InitStruct.SPI_NSS = SPI_NSS_Soft | SPI_NSSInternalSoft_Set; // set the NSS management to internal and pull internal NSS high
 	SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 	SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32; // SPI frequency is APB2 frequency / 32 changed by Miroslav Kohut
@@ -130,7 +136,7 @@ void write_reg( uint8_t WriteAddr, uint8_t WriteData )
 	chip_deselect();
 }
 
-uint16_t read_reg( uint8_t ReadAddr)
+uint8_t read_reg( uint8_t ReadAddr)
 {
 	chip_select();
 
@@ -143,28 +149,18 @@ uint16_t read_reg( uint8_t ReadAddr)
 	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE));
 	SPI_I2S_SendData(SPI1, 0x00); //Dummy byte to generate clock
 	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
+	uint8_t data =  SPI_I2S_ReceiveData(SPI1);
 	chip_deselect();
-	return  SPI_I2S_ReceiveData(SPI1);
+
+	return data;
 }
 
 void read_regs( uint8_t ReadAddr, uint8_t *ReadBuf, unsigned int Bytes )
 {
     uint16_t  i = 0;
-    chip_select();
-    ReadAddr = READ_FLAG | ReadAddr;
-    while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE));
-    SPI_I2S_SendData(SPI1, ReadAddr);
-    while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
-    SPI_I2S_ReceiveData(SPI1); //Clear RXNE bit
-
     for(i=0; i<Bytes; i++){
-    	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE));
-    	SPI_I2S_SendData(SPI1, 0x00); //Dummy byte to generate clock
-    	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
-        ReadBuf[i] = SPI_I2S_ReceiveData(SPI1);
+    	ReadBuf[i] = read_reg(ReadAddr+i);
     }
-    chip_deselect();
-    sleep(SLEEP_50_us);
 }
 
 void chip_select(void){

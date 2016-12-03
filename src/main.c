@@ -61,24 +61,28 @@ int main(void)
     }
     else
     	USART_send_function("\nMPU9250 WAS SUCCESFULLY INITIALIZED!\r");
-    calib_acc();
 
+    calib_acc();
     sleep(SLEEP_500_ms);
 	/* Infinite loop */
-	while (1)
+	while(1)
 	{
+		//read_reg(MPUREG_WHOAMI);
+		read_acc();
+		USART_send_function("ACC X:");
+		USART_send_function_number(accelerometer_data[0]);
+		USART_send_function("   ACC Y:");
+		USART_send_function_number(accelerometer_data[1]);
+		USART_send_function("   ACC Z:");
+		USART_send_function_number(accelerometer_data[2]);
 
-		//USART_send_function("Test_USART");
-		//USART_send_function_number(read_reg(MPUREG_WHOAMI));
-		//sleep(SLEEP_50_us);
-		//read_acc();
 		read_rot();
-		USART_send_function("GYRO X:");
+		USART_send_function("           ROT X:");
 		USART_send_function_number(gyroscope_data[0]);
-		USART_send_function("   GYRO Y:");
-		USART_send_function_number(gyroscope_data[1]);
-		USART_send_function("   GYRO Z:");
-		USART_send_function_number(gyroscope_data[2]);
+		USART_send_function("   ROT Y:");
+		USART_send_function_number(gyroscope_data[0]);
+		USART_send_function("   ROT Z:");
+		USART_send_function_number(gyroscope_data[0]);
 		USART_SendData(USART2,'\r');
 	}
 	return 0;

@@ -11,7 +11,7 @@
 uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
     uint8_t i = 0;
     init_SPI1();
-    sleep(SLEEP_2_ms);
+    sleep(SLEEP_500_ms);
     uint8_t MPU_Init_Data[MPU_InitRegNum][2] = {
         {0x80, MPUREG_PWR_MGMT_1},     // Reset Device
         {0x01, MPUREG_PWR_MGMT_1},     // Clock Source
@@ -21,14 +21,10 @@ uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
         {0x08, MPUREG_ACCEL_CONFIG},   // +-4G
         {0x09, MPUREG_ACCEL_CONFIG_2}, // Set Acc Data Rates, Enable Acc LPF , Bandwidth 184Hz
         {0x30, MPUREG_INT_PIN_CFG},    //
-        //{0x40, MPUREG_I2C_MST_CTRL},   // I2C Speed 348 kHz
-        //{0x20, MPUREG_USER_CTRL},      // Enable AUX
         {0x20, MPUREG_USER_CTRL},       // I2C Master mode
         {0x0D, MPUREG_I2C_MST_CTRL}, //  I2C configuration multi-master  IIC 400KHz
 
         {AK8963_I2C_ADDR, MPUREG_I2C_SLV0_ADDR},  //Set the I2C slave addres of AK8963 and set for write.
-        //{0x09, MPUREG_I2C_SLV4_CTRL},
-        //{0x81, MPUREG_I2C_MST_DELAY_CTRL}, //Enable I2C delay
 
         {AK8963_CNTL2, MPUREG_I2C_SLV0_REG}, //I2C slave 0 register address from where to begin data transfer
         {0x01, MPUREG_I2C_SLV0_DO}, // Reset AK8963
@@ -39,16 +35,13 @@ uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
         {0x81, MPUREG_I2C_SLV0_CTRL}  //Enable I2C and set 1 byte
 
     };
-
-
     for(i=0; i<MPU_InitRegNum; i++) {
     	write_reg(MPU_Init_Data[i][1], MPU_Init_Data[i][0]);
         sleep(SLEEP_2_ms);  //I2C must slow down the write speed, otherwise it won't work
     }
 
-    set_acc_scale(2);
-    set_gyro_scale(250);
-    //AK8963_calib_Magnetometer();  //Can't load this function here , strange problem?
+    set_gyro_scale(BITS_FS_2000DPS);    //Set full scale range for gyroscope
+    set_acc_scale(BITS_FS_4G);
     return 0;
 }
 
@@ -155,7 +148,6 @@ void read_acc()
         accelerometer_data[i]=data/acc_divider;
     }
 }
-
 void read_rot()
 {
     uint8_t response[6];

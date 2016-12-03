@@ -62,8 +62,8 @@ void read_rot();
 #define MPUREG_ZG_OFFS_USRL 0x18
 #define MPUREG_SMPLRT_DIV 0x19
 #define MPUREG_CONFIG 0x1A
-#define MPUREG_GYRO_CONFIG 0x1B
-#define MPUREG_ACCEL_CONFIG 0x1C
+#define MPUREG_GYRO_CONFIG 		   0x1B
+#define MPUREG_ACCEL_CONFIG 	   0x1C
 #define MPUREG_ACCEL_CONFIG_2      0x1D
 #define MPUREG_LP_ACCEL_ODR        0x1E
 #define MPUREG_MOT_THR             0x1F
