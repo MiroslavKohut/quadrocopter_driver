@@ -41,6 +41,7 @@ void sleep(uint64_t time);
 void chip_select(void);
 void chip_deselect(void);
 uint16_t  read_reg( uint8_t WriteAddr);
+void read_regs( uint8_t ReadAddr, uint8_t *ReadBuf, unsigned int Bytes );
 void write_reg( uint8_t WriteAddr, uint8_t WriteData);
 
 
@@ -48,3 +49,8 @@ void write_reg( uint8_t WriteAddr, uint8_t WriteData);
 
 /* ---- SLEEP DEFINITIONS ----------------------------------------------- */
 #define SLEEP_50_us 37
+#define SLEEP_2_ms 1480
+#define SLEEP_500_ms 370000
+
+/* ---- SPI DEFINITIONS ----------------------------------------------- */
+#define READ_FLAG   0x80

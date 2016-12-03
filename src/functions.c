@@ -45,7 +45,7 @@ void USART_send_function(char text[]){
 		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 		i++;
 	}
-	USART_SendData(USART2,'\r');
+	//USART_SendData(USART2,'\r');
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 
 }
@@ -61,7 +61,7 @@ void USART_send_function_number(float number){
 		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 		i++;
 	}
-	USART_SendData(USART2,'\r');
+	//USART_SendData(USART2,'\r');
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 
 }
@@ -130,13 +130,13 @@ void write_reg( uint8_t WriteAddr, uint8_t WriteData )
 	chip_deselect();
 }
 
-uint16_t read_reg( uint8_t WriteAddr)
+uint16_t read_reg( uint8_t ReadAddr)
 {
 	chip_select();
 
-	WriteAddr = 0x80 | WriteAddr;
+	ReadAddr = READ_FLAG | ReadAddr;
 	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE));
-	SPI_I2S_SendData(SPI1, WriteAddr);
+	SPI_I2S_SendData(SPI1, ReadAddr);
 	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
 	SPI_I2S_ReceiveData(SPI1); //Clear RXNE bit
 
@@ -145,6 +145,26 @@ uint16_t read_reg( uint8_t WriteAddr)
 	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
 	chip_deselect();
 	return  SPI_I2S_ReceiveData(SPI1);
+}
+
+void read_regs( uint8_t ReadAddr, uint8_t *ReadBuf, unsigned int Bytes )
+{
+    uint16_t  i = 0;
+    chip_select();
+    ReadAddr = READ_FLAG | ReadAddr;
+    while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE));
+    SPI_I2S_SendData(SPI1, ReadAddr);
+    while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
+    SPI_I2S_ReceiveData(SPI1); //Clear RXNE bit
+
+    for(i=0; i<Bytes; i++){
+    	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE));
+    	SPI_I2S_SendData(SPI1, 0x00); //Dummy byte to generate clock
+    	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
+        ReadBuf[i] = SPI_I2S_ReceiveData(SPI1);
+    }
+    chip_deselect();
+    sleep(SLEEP_50_us);
 }
 
 void chip_select(void){

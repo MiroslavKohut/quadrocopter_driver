@@ -55,19 +55,29 @@ uint64_t c;
 int main(void)
 {
 	/*initializations*/
-
-	init_SPI1();
 	usart_init();
-	//uint8_t b = SPI1_receive_send(0x10);
-	//Start SPI low chipselect bit
-
+    if(mpu9250_init(1,BITS_DLPF_CFG_188HZ)){  //INIT the mpu9250
+    	USART_send_function("\nCouldn't initialize MPU9250 via SPI!\r");
+    }
+    else
+    	USART_send_function("\nMPU9250 WAS SUCCESFULLY INITIALIZED!\r");
+    calib_acc();
+    sleep(SLEEP_500_ms);
 	/* Infinite loop */
 	while (1)
 	{
+
 		//USART_send_function("Test_USART");
-		USART_send_function_number(read_reg(MPUREG_WHOAMI));
+		//USART_send_function_number(read_reg(MPUREG_WHOAMI));
 		//sleep(SLEEP_50_us);
-		//for(c = 0; c < 1000;c++);
+		read_acc();
+		USART_send_function("ACC X:");
+		USART_send_function_number(accelerometer_data[0]);
+		USART_send_function("   ACC Y:");
+		USART_send_function_number(accelerometer_data[1]);
+		USART_send_function("   ACC Z:");
+		USART_send_function_number(accelerometer_data[2]);
+		USART_SendData(USART2,'\r');
 	}
 	return 0;
 }

@@ -10,6 +10,26 @@
 #include <functions.h>
 
 
+
+//variables
+
+float acc_divider;
+float gyro_divider;
+
+int calib_data[3];
+float Magnetometer_ASA[3];
+
+float accelerometer_data[3];
+float Temperature;
+float gyroscope_data[3];
+float Magnetometer[3];
+
+//functions
+uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter);
+uint32_t set_acc_scale(int scale);
+uint32_t set_gyro_scale(int scale);
+
+
 #endif /* MPU_9250_H_ */
 
 /* MPU 9250 registers define */
