@@ -39,6 +39,7 @@ SOFTWARE.
 /* Private variables */
 
 uint64_t c;
+uint8_t duty_cycle = 5;
 
 /* Private function prototypes */
 
@@ -59,13 +60,18 @@ int main(void)
 	Timer_init();
 	PWM_init(50); //vstupny parameter v rozsahu 0-100%, dlzka duty_cycle
 
+	duty_cycle = 85;
 
   /* Infinite loop */
   while (1)
   {
-	  for(c = 0; c < 50000;c++);
+	  for(c = 0; c < 64000;c++);
 	  //USART_send_function("Test_USART");
 	  USART_send_function_number(30.895);
+
+	  //zmena duty_cycle za behu (zmena sirky impulzu, nie frekvencie)
+	  TIM2->CCR2 = ((2000 * duty_cycle) / 100) - 1;
+
   }
   return 0;
 }
