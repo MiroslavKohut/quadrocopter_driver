@@ -27,6 +27,7 @@ SOFTWARE.
 */
 //Includes
 #include <functions.h>
+#include "peripherals.h"
 
 /* Private typedef */
 
@@ -54,6 +55,9 @@ uint64_t c;
 int main(void)
 {
 	usart_init();
+	GPIO_init();
+	Timer_init();
+	PWM_init(50); //vstupny parameter v rozsahu 0-100%, dlzka duty_cycle
 
 
   /* Infinite loop */
