@@ -156,3 +156,21 @@ void read_acc()
     }
 }
 
+void read_rot()
+{
+    uint8_t response[6];
+    int16_t bit_data;
+    float data;
+    int i;
+    read_regs(MPUREG_GYRO_XOUT_H,response,6);
+    for(i=0; i<3; i++) {
+        bit_data=((int16_t)response[i*2]<<8)|response[i*2+1];
+        data=(float)bit_data;
+        gyroscope_data[i]=data/gyro_divider;
+    }
+
+}
+
+
+
+

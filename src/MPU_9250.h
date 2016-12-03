@@ -28,6 +28,9 @@ float Magnetometer[3];
 uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter);
 uint32_t set_acc_scale(int scale);
 uint32_t set_gyro_scale(int scale);
+void calib_acc();
+void read_acc();
+void read_rot();
 
 
 #endif /* MPU_9250_H_ */

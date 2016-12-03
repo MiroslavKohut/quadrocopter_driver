@@ -21,23 +21,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   8 .ARM.attributes 00000029  00000000  00000000  0002001c  2**0
                   CONTENTS, READONLY
-  9 .debug_info   0000446c  00000000  00000000  00020045  2**0
+  9 .debug_info   0000448b  00000000  00000000  00020045  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_abbrev 00000e48  00000000  00000000  000244b1  2**0
+ 10 .debug_abbrev 00000e14  00000000  00000000  000244d0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_aranges 00000590  00000000  00000000  00025300  2**3
+ 11 .debug_aranges 00000598  00000000  00000000  000252e8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000004e8  00000000  00000000  00025890  2**3
+ 12 .debug_ranges 000004f0  00000000  00000000  00025880  2**3
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_line   00002007  00000000  00000000  00025d78  2**0
+ 13 .debug_line   00002038  00000000  00000000  00025d70  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    00001a11  00000000  00000000  00027d7f  2**0
+ 14 .debug_str    00001a1a  00000000  00000000  00027da8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .comment      0000007e  00000000  00000000  00029790  2**0
+ 15 .comment      0000007e  00000000  00000000  000297c2  2**0
                   CONTENTS, READONLY
- 16 .debug_frame  00001668  00000000  00000000  00029810  2**2
+ 16 .debug_frame  0000168c  00000000  00000000  00029840  2**2
                   CONTENTS, READONLY, DEBUGGING
- 17 .stabstr      0000003f  00000000  00000000  0002ae78  2**0
+ 17 .stabstr      0000003f  00000000  00000000  0002aecc  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2527,9 +2527,12 @@ void calib_acc()
  8001254:	00152bec 	.word	0x00152bec
  8001258:	20000054 	.word	0x20000054
 
-0800125c <read_acc>:
+0800125c <read_rot>:
+        accelerometer_data[i]=data/acc_divider;
+    }
+}
 
-void read_acc()
+void read_rot()
 {
  800125c:	b580      	push	{r7, lr}
  800125e:	b086      	sub	sp, #24
@@ -2538,16 +2541,16 @@ void read_acc()
     int16_t bit_data;
     float data;
     int i;
-    read_regs(MPUREG_ACCEL_XOUT_H,response,6);
+    read_regs(MPUREG_GYRO_XOUT_H,response,6);
  8001262:	1d3b      	adds	r3, r7, #4
  8001264:	2206      	movs	r2, #6
  8001266:	4619      	mov	r1, r3
- 8001268:	203b      	movs	r0, #59	; 0x3b
+ 8001268:	2043      	movs	r0, #67	; 0x43
  800126a:	f000 f9ed 	bl	8001648 <read_regs>
     for(i=0; i<3; i++) {
  800126e:	2300      	movs	r3, #0
  8001270:	617b      	str	r3, [r7, #20]
- 8001272:	e029      	b.n	80012c8 <read_acc+0x6c>
+ 8001272:	e029      	b.n	80012c8 <read_rot+0x6c>
         bit_data=((int16_t)response[i*2]<<8)|response[i*2+1];
  8001274:	697b      	ldr	r3, [r7, #20]
  8001276:	005b      	lsls	r3, r3, #1
@@ -2571,41 +2574,42 @@ void read_acc()
  80012a2:	f7ff f825 	bl	80002f0 <__aeabi_i2f>
  80012a6:	4603      	mov	r3, r0
  80012a8:	60fb      	str	r3, [r7, #12]
-        accelerometer_data[i]=data/acc_divider;
- 80012aa:	4b0b      	ldr	r3, [pc, #44]	; (80012d8 <read_acc+0x7c>)
+        gyroscope_data[i]=data/gyro_divider;
+ 80012aa:	4b0b      	ldr	r3, [pc, #44]	; (80012d8 <read_rot+0x7c>)
  80012ac:	681b      	ldr	r3, [r3, #0]
  80012ae:	4619      	mov	r1, r3
  80012b0:	68f8      	ldr	r0, [r7, #12]
  80012b2:	f7ff f925 	bl	8000500 <__aeabi_fdiv>
  80012b6:	4603      	mov	r3, r0
  80012b8:	4619      	mov	r1, r3
- 80012ba:	4a08      	ldr	r2, [pc, #32]	; (80012dc <read_acc+0x80>)
+ 80012ba:	4a08      	ldr	r2, [pc, #32]	; (80012dc <read_rot+0x80>)
  80012bc:	697b      	ldr	r3, [r7, #20]
  80012be:	f842 1023 	str.w	r1, [r2, r3, lsl #2]
     uint8_t response[6];
     int16_t bit_data;
     float data;
     int i;
-    read_regs(MPUREG_ACCEL_XOUT_H,response,6);
+    read_regs(MPUREG_GYRO_XOUT_H,response,6);
     for(i=0; i<3; i++) {
  80012c2:	697b      	ldr	r3, [r7, #20]
  80012c4:	3301      	adds	r3, #1
  80012c6:	617b      	str	r3, [r7, #20]
  80012c8:	697b      	ldr	r3, [r7, #20]
  80012ca:	2b02      	cmp	r3, #2
- 80012cc:	ddd2      	ble.n	8001274 <read_acc+0x18>
+ 80012cc:	ddd2      	ble.n	8001274 <read_rot+0x18>
         bit_data=((int16_t)response[i*2]<<8)|response[i*2+1];
         data=(float)bit_data;
-        accelerometer_data[i]=data/acc_divider;
+        gyroscope_data[i]=data/gyro_divider;
     }
+
 }
  80012ce:	bf00      	nop
  80012d0:	3718      	adds	r7, #24
  80012d2:	46bd      	mov	sp, r7
  80012d4:	bd80      	pop	{r7, pc}
  80012d6:	bf00      	nop
- 80012d8:	2000007c 	.word	0x2000007c
- 80012dc:	20000038 	.word	0x20000038
+ 80012d8:	2000006c 	.word	0x2000006c
+ 80012dc:	20000060 	.word	0x20000060
 
 080012e0 <usart_init>:
  *      Author: Asus
@@ -3343,37 +3347,38 @@ int main(void)
  8001794:	f7ff fde8 	bl	8001368 <USART_send_function>
     calib_acc();
  8001798:	f7ff fd24 	bl	80011e4 <calib_acc>
+
     sleep(SLEEP_500_ms);
  800179c:	4813      	ldr	r0, [pc, #76]	; (80017ec <main+0x78>)
  800179e:	f04f 0100 	mov.w	r1, #0
  80017a2:	f7ff ffc7 	bl	8001734 <sleep>
-	{
 
 		//USART_send_function("Test_USART");
 		//USART_send_function_number(read_reg(MPUREG_WHOAMI));
 		//sleep(SLEEP_50_us);
-		read_acc();
- 80017a6:	f7ff fd59 	bl	800125c <read_acc>
-		USART_send_function("ACC X:");
+		//read_acc();
+		read_rot();
+ 80017a6:	f7ff fd59 	bl	800125c <read_rot>
+		USART_send_function("GYRO X:");
  80017aa:	4811      	ldr	r0, [pc, #68]	; (80017f0 <main+0x7c>)
  80017ac:	f7ff fddc 	bl	8001368 <USART_send_function>
-		USART_send_function_number(accelerometer_data[0]);
+		USART_send_function_number(gyroscope_data[0]);
  80017b0:	4b10      	ldr	r3, [pc, #64]	; (80017f4 <main+0x80>)
  80017b2:	681b      	ldr	r3, [r3, #0]
  80017b4:	4618      	mov	r0, r3
  80017b6:	f7ff fe07 	bl	80013c8 <USART_send_function_number>
-		USART_send_function("   ACC Y:");
+		USART_send_function("   GYRO Y:");
  80017ba:	480f      	ldr	r0, [pc, #60]	; (80017f8 <main+0x84>)
  80017bc:	f7ff fdd4 	bl	8001368 <USART_send_function>
-		USART_send_function_number(accelerometer_data[1]);
+		USART_send_function_number(gyroscope_data[1]);
  80017c0:	4b0c      	ldr	r3, [pc, #48]	; (80017f4 <main+0x80>)
  80017c2:	685b      	ldr	r3, [r3, #4]
  80017c4:	4618      	mov	r0, r3
  80017c6:	f7ff fdff 	bl	80013c8 <USART_send_function_number>
-		USART_send_function("   ACC Z:");
+		USART_send_function("   GYRO Z:");
  80017ca:	480c      	ldr	r0, [pc, #48]	; (80017fc <main+0x88>)
  80017cc:	f7ff fdcc 	bl	8001368 <USART_send_function>
-		USART_send_function_number(accelerometer_data[2]);
+		USART_send_function_number(gyroscope_data[2]);
  80017d0:	4b08      	ldr	r3, [pc, #32]	; (80017f4 <main+0x80>)
  80017d2:	689b      	ldr	r3, [r3, #8]
  80017d4:	4618      	mov	r0, r3
@@ -3388,7 +3393,7 @@ int main(void)
  80017e8:	08001cbc 	.word	0x08001cbc
  80017ec:	0005a550 	.word	0x0005a550
  80017f0:	08001ce4 	.word	0x08001ce4
- 80017f4:	20000038 	.word	0x20000038
+ 80017f4:	20000060 	.word	0x20000060
  80017f8:	08001cec 	.word	0x08001cec
  80017fc:	08001cf8 	.word	0x08001cf8
  8001800:	40004400 	.word	0x40004400
