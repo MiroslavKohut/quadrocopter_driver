@@ -2,7 +2,7 @@
  * functions.h
  *
  *  Created on: 27. 11. 2016
- *      Author: Asus
+ *      Author: Miroslav Kohút
  */
 
 #ifndef FUNCTIONS_H_
@@ -13,53 +13,12 @@
 #include "stm32l1xx.h"
 #include <stdio.h>
 
-/* Private typedef */
-
-/* Private define  */
-
-/* IMU 9250 registers define */
-
-/* Private macro */
-
-/* Private variables */
-
-/* Private function prototypes */
-
-/* Private functions */
-
-// init functions
-void usart_init();
-void init_SPI1();
+//common includes
+#include <common/delay.h>
 
 //common functions
 
 //Timers
 void TIM2_init(int period_in_miliseconds);
 
-//Usart
-void USART_send_function();
-void USART_send_function_number(float number);
-
-//sleep
-void sleep(uint64_t time);
-
-//SPI
-void init_SPI1(void);
-void chip_select(void);
-void chip_deselect(void);
-uint8_t  read_reg( uint8_t WriteAddr);
-void read_regs( uint8_t ReadAddr, uint8_t *ReadBuf, unsigned int Bytes );
-void write_reg( uint8_t WriteAddr, uint8_t WriteData);
-
-//other
-
-
 #endif /* FUNCTIONS_H_ */
-
-/* ---- SLEEP DEFINITIONS ----------------------------------------------- */
-#define SLEEP_50_us 37
-#define SLEEP_2_ms 1480
-#define SLEEP_500_ms 370000
-
-/* ---- SPI DEFINITIONS ----------------------------------------------- */
-#define READ_FLAG   0x80

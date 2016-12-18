@@ -4,14 +4,15 @@
  *  Created on: 3. 12. 2016
  *      Author: Asus
  */
-#include <MPU_9250.h>
+#include <device_libraries/MPU_9250.h>
 
 #define MPU_InitRegNum 17
 
 uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
-    uint8_t i = 0;
+	init_delay();
+	uint8_t i = 0;
     init_SPI1();
-    sleep(SLEEP_500_ms);
+    delay_ms(500);
     uint8_t MPU_Init_Data[MPU_InitRegNum][2] = {
         {0x80, MPUREG_PWR_MGMT_1},     // Reset Device
         {0x01, MPUREG_PWR_MGMT_1},     // Clock Source
@@ -35,9 +36,10 @@ uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
         {0x81, MPUREG_I2C_SLV0_CTRL}  //Enable I2C and set 1 byte
 
     };
+
     for(i=0; i<MPU_InitRegNum; i++) {
     	write_reg(MPU_Init_Data[i][1], MPU_Init_Data[i][0]);
-        sleep(SLEEP_2_ms);  //I2C must slow down the write speed, otherwise it won't work
+    	delay_ms(2);
     }
 
     set_gyro_scale(BITS_FS_2000DPS);    //Set full scale range for gyroscope
@@ -66,7 +68,7 @@ uint32_t  set_acc_scale(int scale){
             acc_divider=2048;
         break;
     }
-    temp_scale=read_reg(MPUREG_ACCEL_CONFIG);
+    temp_scale=read_reg(READ_FLAG | MPUREG_ACCEL_CONFIG);
 
     switch (temp_scale){
         case BITS_FS_2G:
@@ -102,7 +104,7 @@ uint32_t set_gyro_scale(int scale){
             gyro_divider=16.4;
         break;
     }
-    temp_scale=read_reg(MPUREG_GYRO_CONFIG);
+    temp_scale=read_reg(READ_FLAG | MPUREG_GYRO_CONFIG);
     switch (temp_scale){
         case BITS_FS_250DPS:
             temp_scale=250;
@@ -125,12 +127,12 @@ void calib_acc()
     uint8_t response[4];
     int temp_scale;
     //READ CURRENT ACC SCALE
-    temp_scale=read_reg(MPUREG_ACCEL_CONFIG);
+    temp_scale=read_reg(READ_FLAG | MPUREG_ACCEL_CONFIG);
     set_acc_scale(BITS_FS_8G);
     //ENABLE SELF TEST need modify
     //temp_scale=WriteReg(MPUREG_ACCEL_CONFIG, 0x80>>axis);
 
-    read_regs(MPUREG_SELF_TEST_X,response,4);
+    read_regs(READ_FLAG |MPUREG_SELF_TEST_X,response,4);
     calib_data[0]=((response[0]&11100000)>>3)|((response[3]&00110000)>>4);
     calib_data[1]=((response[1]&11100000)>>3)|((response[3]&00001100)>>2);
     calib_data[2]=((response[2]&11100000)>>3)|((response[3]&00000011));
@@ -144,7 +146,7 @@ void read_acc()
     int16_t bit_data;
     float data;
     int i;
-    read_regs(MPUREG_ACCEL_XOUT_H,response,6);
+    read_regs(READ_FLAG | MPUREG_ACCEL_XOUT_H,response,6);
     for(i=0; i<3; i++) {
         bit_data=((int16_t)response[i*2]<<8)|response[i*2+1];
         data=(float)bit_data;
@@ -158,7 +160,7 @@ void read_rot()
     int16_t bit_data;
     float data;
     int i;
-    read_regs(MPUREG_GYRO_XOUT_H,response,6);
+    read_regs(READ_FLAG | MPUREG_GYRO_XOUT_H,response,6);
     for(i=0; i<3; i++) {
         bit_data=((int16_t)response[i*2]<<8)|response[i*2+1];
         data=(float)bit_data;

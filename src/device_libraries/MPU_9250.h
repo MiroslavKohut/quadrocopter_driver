@@ -7,12 +7,11 @@
 
 #ifndef MPU_9250_H_
 #define MPU_9250_H_
-#include <functions.h>
 
-
+#include <communication/spi.h>
+#include <common/delay.h>
 
 //variables
-
 float acc_divider;
 float gyro_divider;
 

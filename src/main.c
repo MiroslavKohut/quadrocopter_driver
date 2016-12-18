@@ -27,7 +27,8 @@ SOFTWARE.
 */
 //Includes
 #include <functions.h>
-#include <MPU_9250.h>
+#include <communication/usart.h>
+#include <device_libraries/MPU_9250.h>
 
 /* Private typedef */
 
@@ -55,7 +56,11 @@ uint64_t c;
 int main(void)
 {
 	/*initializations*/
+
+	init_delay();
+	delay_ms(500);
 	usart_init();
+
     if(mpu9250_init(1,BITS_DLPF_CFG_188HZ)){  //INIT the mpu9250
     	USART_send_function("\nCouldn't initialize MPU9250 via SPI!\r");
     }
@@ -63,33 +68,14 @@ int main(void)
     	USART_send_function("\nMPU9250 WAS SUCCESFULLY INITIALIZED!\r");
 
     calib_acc();
-    sleep(SLEEP_500_ms);
+    //delay_us(500);
 
     TIM2_init(50);
     TIM3_init(10);
 	/* Infinite loop */
 	while(1)
 	{
-		/*read_reg(MPUREG_WHOAMI);
-		read_acc();
-		USART_send_function("ACC X:");
-		USART_send_function_number(accelerometer_data[0]);
-		USART_send_function("   ACC Y:");
-		USART_send_function_number(accelerometer_data[1]);
-		USART_send_function("   ACC Z:");
-		USART_send_function_number(accelerometer_data[2]);*/
-
-		//read_rot();
-		//USART_send_function("ROT X:");
-		//USART_send_function_number(gyroscope_data[0]);
-		/*USART_send_function("   ROT Y:");
-		USART_send_function_number(gyroscope_data[1]);
-		USART_send_function("   ROT Z:");
-		USART_send_function_number(gyroscope_data[2]);
-		USART_SendData(USART2,'\r');*/
-		//USART_send_function("   Angle X:");
 		USART_send_function_number(gyroscope_angle[2]);
-		//USART_SendData(USART2,'\r');
 	}
 	return 0;
 }
