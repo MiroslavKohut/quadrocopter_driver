@@ -12,5 +12,6 @@
 void GPIO_init(void);
 void PWM_init(uint8_t value);
 void Timer_init(void);
+void BLDC_Regulator_calibration(void);
 
 #endif /* PERIPHERALS_H_ */

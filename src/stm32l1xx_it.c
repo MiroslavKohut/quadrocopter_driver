@@ -23,6 +23,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l1xx_it.h"
+#include "delay.h"
+
 /* #include "main.h" */
 
 /** @addtogroup Template_Project
@@ -135,10 +137,7 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-	/*  TimingDelay_Decrement(); */
-#ifdef USE_STM32L_DISCOVERY
-  TimingDelay_Decrement();
-#endif
+	delay_decrement();
 }
 
 /******************************************************************************/
