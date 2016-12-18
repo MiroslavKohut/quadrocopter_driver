@@ -44,9 +44,6 @@ uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
 
     set_gyro_scale(BITS_FS_2000DPS);    //Set full scale range for gyroscope
     set_acc_scale(BITS_FS_4G);
-    for(i=0; i<3; i++) {
-    	gyroscope_data_avg[i] = 0;
-    }
     return 0;
 }
 
@@ -165,18 +162,7 @@ void read_rot()
         bit_data=((int16_t)response[i*2]<<8)|response[i*2+1];
         data=(float)bit_data;
         gyroscope_data[i]=data/gyro_divider;
-        gyroscope_data_avg[i]= (gyroscope_data_avg[i]*4 + gyroscope_data[i])/5;
     }
 }
-
-void calculate_angle()
-{
-	int i;
-	for (i=0; i<3 ; i++)
-	{
-		gyroscope_angle[i] = gyroscope_angle[i] + gyroscope_data_avg[i]*0.05;		// *dt
-	}
-}
-
 
 

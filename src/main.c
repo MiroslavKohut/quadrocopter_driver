@@ -56,23 +56,30 @@ uint64_t c;
 int main(void)
 {
 	/*initializations*/
-
 	init_delay();
-	delay_ms(500);
 	usart_init();
+	functions_init();
 
-    if(mpu9250_init(1,BITS_DLPF_CFG_188HZ)){  //INIT the mpu9250
+	if(mpu9250_init(1,BITS_DLPF_CFG_188HZ)){  //INIT the mpu9250
     	USART_send_function("\nCouldn't initialize MPU9250 via SPI!\r");
     }
     else
     	USART_send_function("\nMPU9250 WAS SUCCESFULLY INITIALIZED!\r");
 
-    calib_acc();
-    //delay_us(500);
+	calib_acc();
+    delay_ms(500);
 
-    TIM2_init(50);
-    TIM3_init(10);
-	/* Infinite loop */
+
+    //sampling
+    TIM3_sampling_timer(moveing_average_sampling*1000);
+    delay_ms(moveing_average_sampling*1000*moveing_average_samples);
+
+    //integrating
+    TIM4_integrating_timer(angle_sampling*1000);
+
+
+
+    /* Infinite loop */
 	while(1)
 	{
 		USART_send_function_number(gyroscope_angle[2]);
