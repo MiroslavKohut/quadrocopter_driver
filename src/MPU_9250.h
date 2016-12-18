@@ -22,6 +22,8 @@ float Magnetometer_ASA[3];
 float accelerometer_data[3];
 float Temperature;
 float gyroscope_data[3];
+float gyroscope_data_avg[3];
+float gyroscope_angle[3];
 float Magnetometer[3];
 
 //functions
@@ -31,6 +33,7 @@ uint32_t set_gyro_scale(int scale);
 void calib_acc();
 void read_acc();
 void read_rot();
+void calculate_angle();
 
 
 #endif /* MPU_9250_H_ */

@@ -32,17 +32,26 @@ void usart_init();
 void init_SPI1();
 
 //common functions
+
+//Timers
+void TIM2_init(int period_in_miliseconds);
+
 //Usart
 void USART_send_function();
 void USART_send_function_number(float number);
+
 //sleep
 void sleep(uint64_t time);
 
+//SPI
+void init_SPI1(void);
 void chip_select(void);
 void chip_deselect(void);
 uint8_t  read_reg( uint8_t WriteAddr);
 void read_regs( uint8_t ReadAddr, uint8_t *ReadBuf, unsigned int Bytes );
 void write_reg( uint8_t WriteAddr, uint8_t WriteData);
+
+//other
 
 
 #endif /* FUNCTIONS_H_ */
