@@ -7,65 +7,100 @@
 /* Includes */
 #include <functions.h>
 
+// function sleep for specific time in def, +- 2 us
 
-
-void usart_init(){
-
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
-
-	GPIO_InitTypeDef GPIO_usart;
-
-	GPIO_usart.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
-	GPIO_usart.GPIO_Mode = GPIO_Mode_AF;
-	GPIO_usart.GPIO_OType = GPIO_OType_PP;
-	GPIO_usart.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_usart.GPIO_Speed = GPIO_Speed_40MHz;
-
-	GPIO_Init(GPIOA,&GPIO_usart);
-
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-
-	USART_InitTypeDef USART_InitStructure;
-	USART_InitStructure.USART_BaudRate = 9600;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;
-	USART_InitStructure.USART_Parity = USART_Parity_No;
-	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-	USART_Init(USART2, &USART_InitStructure);
-	USART_Cmd(USART2, ENABLE);
+void functions_init(){
+    for(uint8_t i = 0;i<3;i++){
+    	gyroscope_data_avg[i] = 0;
+    }
+    return;
 }
 
-void USART_send_function(char text[]){
+void TIM4_integrating_timer(int period_in_miliseconds)
+{
+	uint32_t SystemTimeClock = 16000000;		//mame 16MHz vstup!!!
+	unsigned short inputPeriodValue = 10000;		//input clock = 10000Hz = 0,1ms
+	unsigned short prescalerValue = (unsigned short) (SystemTimeClock / inputPeriodValue) - 1;
 
-	uint16_t i = 0;
-	while(text[i] != '\0'){
-		USART_SendData(USART2, text[i]);
-		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
-		i++;
+	/*Structure for timer settings*/
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+	TIM_TimeBaseStructure.TIM_Period = period_in_miliseconds*10 - 1;		// 10 period * 0,0001s = 0,001s = 1ms vzorkovaci cas
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseStructure.TIM_Prescaler = prescalerValue;
+	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+	/* TIM Interrupts enable */
+	TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM4, ENABLE);
+
+	NVIC_InitTypeDef NVIC_InitStructure;
+	/* Enable the TIM4 gloabal Interrupt */
+	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+}
+
+void TIM3_sampling_timer(int period_in_miliseconds)
+{
+	uint32_t SystemTimeClock = 16000000;		//mame 16MHz vstup!!!
+	unsigned short inputPeriodValue = 10000;		//input clock = 10000Hz = 0,1ms
+	unsigned short prescalerValue = (unsigned short) (SystemTimeClock / inputPeriodValue) - 1;
+
+	/*Structure for timer settings*/
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+	TIM_TimeBaseStructure.TIM_Period = period_in_miliseconds*10 - 1;		// 10 period * 0,0001s = 0,001s = 1ms vzorkovaci cas
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseStructure.TIM_Prescaler = prescalerValue;
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+	/* TIM Interrupts enable */
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM3, ENABLE);
+
+	NVIC_InitTypeDef NVIC_InitStructure;
+	/* Enable the TIM3 gloabal Interrupt */
+	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+}
+
+
+
+void TIM4_IRQHandler()
+{
+    if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
+    {
+        TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+        calculate_angle();
+    }
+}
+
+void TIM3_IRQHandler()
+{
+    if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
+    {
+        TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+        read_rot();
+        for(uint8_t i = 0;i<3;i++){
+        	gyroscope_data_avg[i]= (gyroscope_data_avg[i]*(moveing_average_samples-1) + gyroscope_data[i])/moveing_average_samples;
+        }
+    }
+}
+
+void calculate_angle()
+{
+	int i;
+	for (i=0; i<3 ; i++)
+	{
+		gyroscope_angle[i] = gyroscope_angle[i] + gyroscope_data_avg[i] * angle_sampling;
 	}
-	USART_SendData(USART2,'\r');
-	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
-
 }
 
-void USART_send_function_number(float number){
-
-	uint16_t i = 0;
-	char text[20];
-	uint16_t num1 = (uint16_t)number;
-	sprintf(text,"%d.%d", num1, (uint16_t)((number-num1)*1000));
-	while(text[i] != '\0'){
-		USART_SendData(USART2, text[i]);
-		while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
-		i++;
-	}
-	USART_SendData(USART2,'\r');
-	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
-
-}
 
 

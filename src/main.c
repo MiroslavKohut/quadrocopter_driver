@@ -27,6 +27,8 @@ SOFTWARE.
 */
 //Includes
 #include <functions.h>
+#include <communication/usart.h>
+#include <device_libraries/MPU_9250.h>
 
 /* Private typedef */
 
@@ -53,17 +55,36 @@ uint64_t c;
 */
 int main(void)
 {
+	/*initializations*/
+	init_delay();
 	usart_init();
+	functions_init();
+
+	if(mpu9250_init(1,BITS_DLPF_CFG_188HZ)){  //INIT the mpu9250
+    	USART_send_function("\nCouldn't initialize MPU9250 via SPI!\r");
+    }
+    else
+    	USART_send_function("\nMPU9250 WAS SUCCESFULLY INITIALIZED!\r");
+
+	calib_acc();
+    delay_ms(500);
 
 
-  /* Infinite loop */
-  while (1)
-  {
-	  for(c = 0; c < 50000;c++);
-	  //USART_send_function("Test_USART");
-	  USART_send_function_number(30.895);
-  }
-  return 0;
+    //sampling
+    TIM3_sampling_timer(moveing_average_sampling*1000);
+    delay_ms(moveing_average_sampling*1000*moveing_average_samples);
+
+    //integrating
+    TIM4_integrating_timer(angle_sampling*1000);
+
+
+
+    /* Infinite loop */
+	while(1)
+	{
+		USART_send_function_number(gyroscope_angle[2]);
+	}
+	return 0;
 }
 
 #ifdef  USE_FULL_ASSERT
