@@ -77,8 +77,6 @@ int main(void)
     //integrating
     TIM4_integrating_timer(angle_sampling*1000);
 
-
-
     /* Infinite loop */
 	while(1)
 	{

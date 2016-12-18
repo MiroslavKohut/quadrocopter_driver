@@ -77,6 +77,7 @@ void TIM4_IRQHandler()
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+        read_rot();
         calculate_angle();
     }
 }
@@ -95,10 +96,12 @@ void TIM3_IRQHandler()
 
 void calculate_angle()
 {
-	int i;
+	uint8_t i;
 	for (i=0; i<3 ; i++)
 	{
-		gyroscope_angle[i] = gyroscope_angle[i] + gyroscope_data_avg[i] * angle_sampling;
+		if (!(gyroscope_data[i] < 2 && gyroscope_data[i] > -2)){
+			gyroscope_angle[i] = gyroscope_angle[i] + gyroscope_data_avg[i] * angle_sampling;
+		}
 	}
 }
 
