@@ -90,6 +90,7 @@ void TIM3_IRQHandler()
         for(uint8_t i = 0;i<3;i++){
         	gyroscope_data_avg[i]= (gyroscope_data_avg[i]*(moveing_average_samples-1) + gyroscope_data[i])/moveing_average_samples;
         }
+        read_acc();
     }
 }
 

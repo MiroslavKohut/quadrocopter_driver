@@ -147,7 +147,7 @@ void read_acc()
     for(i=0; i<3; i++) {
         bit_data=((int16_t)response[i*2]<<8)|response[i*2+1];
         data=(float)bit_data;
-        accelerometer_data[i]=data/acc_divider;
+        accelerometer_data[i]=(data/acc_divider)*10;
     }
 }
 

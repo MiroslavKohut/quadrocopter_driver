@@ -17,6 +17,7 @@
 #include <common/delay.h>
 #include <device_libraries/MPU_9250.h>
 
+
 //definitions
 #define angle_sampling 				((float)0.05) // integrator sampling in seconds
 #define moveing_average_sampling	((float)0.005) //moveing average reading in seconds
