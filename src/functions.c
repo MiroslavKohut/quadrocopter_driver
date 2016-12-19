@@ -77,7 +77,6 @@ void TIM4_IRQHandler()
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
-        read_rot();
         calculate_angle();
     }
 }

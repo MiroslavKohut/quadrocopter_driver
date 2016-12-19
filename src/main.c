@@ -81,6 +81,7 @@ int main(void)
 	while(1)
 	{
 		USART_send_function_number(gyroscope_angle[2]);
+		//USART_send_function_number(gyroscope_angle[2]);
 	}
 	return 0;
 }
