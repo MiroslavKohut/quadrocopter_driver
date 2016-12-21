@@ -6,6 +6,13 @@
  */
 
 /* Includes */
+
+#define ARM_MATH_CM3
+#undef A0
+#undef A1
+#undef A2
+#include <arm_math.h>
+
 #include <stddef.h>
 #include "stm32l1xx.h"
 #include "peripherals.h"
@@ -13,11 +20,16 @@
 
 uint8_t duty_cycle = 0, i = 0, button = 0, buttonState = 0;
 
+arm_pid_instance_f32 PID;
+
 /* Private define  */
 #define Kalibruj //nie je potrebne pri Opto regulatororch od DJI
 
 int main(void)
 {
+
+
+	float duty = arm_pid_f32(&PID, 1);
 	SystemInit();
 	SystemCoreClockUpdate();
 	SysTick_Config(SystemCoreClock /1000);
