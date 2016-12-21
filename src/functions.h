@@ -17,14 +17,21 @@
 #include <common/delay.h>
 #include <device_libraries/MPU_9250.h>
 
+//constats
+#define M_PI 3.14159265359
 
 //definitions
-#define angle_sampling 				((float)0.05) // integrator sampling in seconds
-#define moveing_average_sampling	((float)0.005) //moveing average reading in seconds
-#define moveing_average_samples     10             //number of samples used in moveing average
+#define angle_sampling 				((float)0.025) // integrator sampling in seconds
+#define moveing_average_sampling	((float)0.010) //moveing average reading in seconds
+#define moveing_average_samples     5             //number of samples used in moveing average
 
 //global variables
 float gyroscope_data_avg[3];
+float accelerometer_data_avg[3];
+
+float roll;
+float pitch;
+float yaw;
 
 //Timers
 void TIM4_integrating_timer(int period_in_miliseconds);

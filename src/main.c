@@ -69,6 +69,13 @@ int main(void)
 	calib_acc();
     delay_ms(500);
 
+    GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_40MHz;
+	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     //sampling
     TIM3_sampling_timer(moveing_average_sampling*1000);
@@ -80,8 +87,7 @@ int main(void)
     /* Infinite loop */
 	while(1)
 	{
-		//USART_send_function_number(gyroscope_angle[2]);
-		USART_send_function_number(accelerometer_data[2]);
+		USART_send_function_number(gyroscope_data_avg[2]);
 	}
 	return 0;
 }
