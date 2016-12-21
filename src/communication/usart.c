@@ -35,6 +35,19 @@ void usart_init(){
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	USART_Init(USART2, &USART_InitStructure);
 	USART_Cmd(USART2, ENABLE);
+
+	//interrupt
+	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+
+	  /* Enable the USARTx Interrupt */
+	NVIC_InitTypeDef NVIC_InitStructure;
+	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
 }
 
 void USART_send_function(char text[]){
@@ -48,7 +61,6 @@ void USART_send_function(char text[]){
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 
 }
-
 void USART_send_function_number(float number){
 
 	uint16_t i = 0;
@@ -70,3 +82,31 @@ void USART_send_function_number(float number){
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 
 }
+
+/*void USART2_IRQHandler(void)
+{
+	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
+	{
+		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+		rec_data = USART_ReceiveData(USART2);
+		if (rec_data == '+'){
+			TIM2->CCR1 += 5;
+			TIM2->CCR2 += 5;
+			TIM2->CCR3 += 5;
+			TIM2->CCR4 += 5;
+		}
+		else if (rec_data == '-'){
+			TIM2->CCR1 -= 5;
+			TIM2->CCR2 -= 5;
+			TIM2->CCR3 -= 5;
+			TIM2->CCR4 -= 5;
+		}
+		else{
+			TIM2->CCR1 = 100;
+			TIM2->CCR2 = 100;
+			TIM2->CCR3 = 100;
+			TIM2->CCR4 = 100;
+		}
+    }
+}*/
+

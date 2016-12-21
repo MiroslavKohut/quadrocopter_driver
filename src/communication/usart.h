@@ -13,6 +13,7 @@
 #include <stdio.h>
 
 
+float rec_data;
 void usart_init();
 
 void USART_send_function();

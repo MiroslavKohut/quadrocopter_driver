@@ -10,6 +10,10 @@
 // function sleep for specific time in def, +- 2 us
 
 void functions_init(){
+
+	desired_roll = 0;
+	desired_pitch = 0;
+
     for(uint8_t i = 0;i<3;i++){
     	gyroscope_data_avg[i] = 0;
     }
@@ -67,7 +71,7 @@ void TIM3_sampling_timer(int period_in_miliseconds)
 	NVIC_InitTypeDef NVIC_InitStructure;
 	/* Enable the TIM3 gloabal Interrupt */
 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
@@ -81,12 +85,14 @@ void TIM4_IRQHandler()
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
         complementary_filter();
+        PID_stabilization_control();
     }
 }
 
 void TIM3_IRQHandler()
 {
 
+	GPIO_ResetBits(GPIOA, GPIO_Pin_10);
     if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
@@ -99,27 +105,14 @@ void TIM3_IRQHandler()
         	accelerometer_data_avg[i]= (accelerometer_data_avg[i]*(moveing_average_samples-1) + accelerometer_data[i])/moveing_average_samples;
         }
     }
-
+    GPIO_SetBits(GPIOA, GPIO_Pin_10);
 }
-/*
-void calculate_angle()
-{
-	uint8_t i;
-	for (i=0; i<3 ; i++)
-	{
-		if (!(gyroscope_data[i] < 2 && gyroscope_data[i] > -2)){
-			gyroscope_angle[i] = gyroscope_angle[i] + gyroscope_data_avg[i] * angle_sampling;
-		}
-	}
-}*/
-
 /**COMPLEMENTARY FILTER **/
 
 #define M_PI 3.14159265359
 
 void complementary_filter()
 {
-	GPIO_ResetBits(GPIOA, GPIO_Pin_10);
 	float pitchAcc, rollAcc;
 
     // Integrate the gyroscope data -> int(angularSpeed) = angle
@@ -130,18 +123,77 @@ void complementary_filter()
 	if (!(gyroscope_data_avg[1] < 2 && gyroscope_data_avg[1] > -2)){
 		pitch = pitch  - gyroscope_data_avg[1] * angle_sampling;
 	}
-
 	if (!(gyroscope_data_avg[2] < 2 && gyroscope_data_avg[2] > -2)){
-		yaw = yaw  - gyroscope_data_avg[2] * angle_sampling;
+		yaw = yaw  + gyroscope_data_avg[2] * angle_sampling;
 	}
 
 	//Turning around the X axis results in a vector on the Y-axis
-    rollAcc = atan2f((float)accelerometer_data_avg[1], (float)accelerometer_data_avg[2]) * 180 / M_PI;
+    rollAcc = atan2f((float)accelerometer_data_avg[1], (float)accelerometer_data_avg[2]) * M_PI_deg;
     roll = roll * 0.6 + rollAcc * 0.4;
 
 	// Turning around the Y axis results in a vector on the X-axis
-    pitchAcc = atan2f((float)accelerometer_data_avg[0], (float)accelerometer_data_avg[2]) * 180 / M_PI;
+    pitchAcc = atan2f((float)accelerometer_data_avg[0], (float)accelerometer_data_avg[2]) * M_PI_deg;
     pitch = pitch * 0.6 + pitchAcc * 0.4;
-    GPIO_SetBits(GPIOA, GPIO_Pin_10);
+
+}
+
+void PID_roll_control(){
+
+	int8_t action_throttle_roll;
+	action_throttle_roll = (int)(((desired_roll - roll)) * 0.5);
+
+	if(action_throttle_roll > 30)
+		action_throttle_roll = 30;
+	else if(action_throttle_roll < -30)
+		action_throttle_roll = -30;
+
+	set_throttle(1,current_throttle - action_throttle_roll);
+	set_throttle(2,current_throttle - action_throttle_roll);
+
+	set_throttle(3,current_throttle + action_throttle_roll);
+	set_throttle(4,current_throttle + action_throttle_roll);
+
+
+}
+
+void PID_pitch_control(){
+
+	int8_t action_throttle_pitch;
+
+	action_throttle_pitch = (int)(desired_pitch - pitch)*KP;
+
+	if(action_throttle_pitch > 30)
+		action_throttle_pitch = 30;
+	else if(action_throttle_pitch < -30)
+		action_throttle_pitch = -30;
+
+	set_throttle(4,current_throttle + action_throttle_pitch);
+	set_throttle(1,current_throttle + action_throttle_pitch);
+
+	set_throttle(2,current_throttle - action_throttle_pitch);
+	set_throttle(3,current_throttle - action_throttle_pitch);
+}
+
+void PID_stabilization_control(){
+
+	int8_t action_throttle_roll;
+	int8_t action_throttle_pitch;
+
+	action_throttle_pitch = (int8_t)(desired_pitch - pitch)*KP;
+	if(action_throttle_pitch > 30)
+		action_throttle_pitch = 30;
+	else if(action_throttle_pitch < -30)
+		action_throttle_pitch = -30;
+
+	action_throttle_roll = (int8_t)(desired_roll - roll)*KP;
+	if(action_throttle_roll > 30)
+		action_throttle_roll = 30;
+	else if(action_throttle_roll < -30)
+		action_throttle_roll = -30;
+
+	set_throttle(4,current_throttle + action_throttle_pitch + action_throttle_roll);
+	set_throttle(1,current_throttle + action_throttle_pitch - action_throttle_roll);
+	set_throttle(2,current_throttle - action_throttle_pitch - action_throttle_roll);
+	set_throttle(3,current_throttle - action_throttle_pitch + action_throttle_roll);
 }
 

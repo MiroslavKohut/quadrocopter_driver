@@ -26,9 +26,18 @@ SOFTWARE.
 ******************************************************************************
 */
 //Includes
+
+#define ARM_MATH_CM3
+#undef A0
+#undef A1
+#undef A2
+#include <arm_math.h>
+
 #include <functions.h>
 #include <communication/usart.h>
 #include <device_libraries/MPU_9250.h>
+#include <device_libraries/motor_control.h>
+
 
 /* Private typedef */
 
@@ -44,6 +53,10 @@ uint64_t c;
 /* Private function prototypes */
 
 /* Private functions */
+/*
+arm_pid_instance_f32 PID;
+a toto
+ duty = arm_pid_f32(&PID, pid_error);*/
 
 
 /**
@@ -57,6 +70,8 @@ int main(void)
 {
 	/*initializations*/
 	init_delay();
+
+	motor_init();
 	usart_init();
 	functions_init();
 
@@ -84,10 +99,15 @@ int main(void)
     //integrating
     TIM4_integrating_timer(angle_sampling*1000);
 
-    /* Infinite loop */
+    delay_ms(1000);
+    motor_start();
+    //BLDC_Regulator_calibration();
 	while(1)
 	{
-		USART_send_function_number(gyroscope_data_avg[2]);
+		//USART_send_function_number(action_throttle_roll);
+        //PID_roll_control(roll);
+		//USART_send_function_number(TIM2->CCR3);
+
 	}
 	return 0;
 }

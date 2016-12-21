@@ -41,7 +41,7 @@ void init_SPI1(void){
 	SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
 
 	SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
-	SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
+	SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
 	SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
 	SPI_Init(SPI1, &SPI_InitStruct);
 
