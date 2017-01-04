@@ -82,8 +82,8 @@ void USART_send_function_number(float number){
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 
 }
-
-/*void USART2_IRQHandler(void)
+/*
+void USART2_IRQHandler(void)
 {
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
 	{

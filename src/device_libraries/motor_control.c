@@ -19,6 +19,7 @@ void motor_init(){
 }
 
 void motor_start(){
+
 	 for (int i=1;i<=4;i++){
 		 set_throttle(i,NOMINAL_THROTTLE/2);
 	 }
@@ -31,6 +32,10 @@ void motor_start(){
 }
 
 void set_throttle(uint8_t motor, int8_t data){
+
+	if(data > MAX_THROTTLE)
+		data = MAX_THROTTLE;
+
 
 	switch(motor)
 	{
@@ -120,7 +125,7 @@ void GPIO_PWM_init(void)
     GPIO_Button.GPIO_Mode = GPIO_Mode_IN;
     GPIO_Init(GPIOC, &GPIO_Button);
 }
-
+/*
 void BLDC_Regulator_calibration(void)
 {
 	uint8_t button = 0, buttonState = 0;
@@ -169,4 +174,4 @@ void BLDC_Regulator_calibration(void)
 		  }
 	  }
 	}
-}
+}*/

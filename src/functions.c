@@ -11,8 +11,11 @@
 
 void functions_init(){
 
+	rx_init();
+
 	desired_roll = 0;
 	desired_pitch = 0;
+	desired_yaw = 0;
 
     for(uint8_t i = 0;i<3;i++){
     	gyroscope_data_avg[i] = 0;
@@ -50,7 +53,7 @@ void TIM4_integrating_timer(int period_in_miliseconds)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-void TIM3_sampling_timer(int period_in_miliseconds)
+void TIM5_sampling_timer(int period_in_miliseconds)
 {
 	uint32_t SystemTimeClock = 16000000;		//mame 16MHz vstup!!!
 	unsigned short inputPeriodValue = 10000;		//input clock = 10000Hz = 0,1ms
@@ -58,19 +61,19 @@ void TIM3_sampling_timer(int period_in_miliseconds)
 
 	/*Structure for timer settings*/
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
 	TIM_TimeBaseStructure.TIM_Period = period_in_miliseconds*10 - 1;		// 10 period * 0,0001s = 0,001s = 1ms vzorkovaci cas
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseStructure.TIM_Prescaler = prescalerValue;
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+	TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
 	/* TIM Interrupts enable */
-	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
-	TIM_Cmd(TIM3, ENABLE);
+	TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM5, ENABLE);
 
 	NVIC_InitTypeDef NVIC_InitStructure;
-	/* Enable the TIM3 gloabal Interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+	/* Enable the TIM5 gloabal Interrupt */
+	NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -81,21 +84,24 @@ void TIM3_sampling_timer(int period_in_miliseconds)
 
 void TIM4_IRQHandler()
 {
+	//GPIO_ResetBits(GPIOA, GPIO_Pin_10);
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
         complementary_filter();
-        PID_stabilization_control();
+        PID_yaw_control();
+        //PID_pitch_control();
+        //PID_stabilization_control();
     }
+    //GPIO_SetBits(GPIOA, GPIO_Pin_10);
 }
 
-void TIM3_IRQHandler()
+void TIM5_IRQHandler()
 {
-
 	GPIO_ResetBits(GPIOA, GPIO_Pin_10);
-    if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
+    if (TIM_GetITStatus(TIM5, TIM_IT_Update) != RESET)
     {
-        TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+        TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
         read_rot();
         for(uint8_t i = 0;i<3;i++){
         	gyroscope_data_avg[i]= (gyroscope_data_avg[i]*(moveing_average_samples-1) + gyroscope_data[i])/moveing_average_samples;
@@ -136,48 +142,110 @@ void complementary_filter()
     pitch = pitch * 0.6 + pitchAcc * 0.4;
 
 }
+void PID_yaw_control(){
 
+	int8_t action_throttle_yaw;
+
+
+	action_throttle_yaw = (int)(((desired_yaw - gyroscope_data_avg[2])) * KP);
+
+	if(action_throttle_yaw > 10)
+		action_throttle_yaw = 10;
+	else if(action_throttle_yaw < -10)
+		action_throttle_yaw = -10;
+
+	int32_t contrroller_throttle = pulse_length_throttle - 100;
+
+	if(contrroller_throttle > MAX_THROTTLE)
+		contrroller_throttle = MAX_THROTTLE;
+
+	if (contrroller_throttle + action_throttle_yaw > MAX_THROTTLE)
+		contrroller_throttle = contrroller_throttle - (contrroller_throttle + action_throttle_yaw - MAX_THROTTLE);
+
+	if (contrroller_throttle > 5){
+		set_throttle(1,contrroller_throttle-action_throttle_yaw);
+		set_throttle(2,contrroller_throttle+action_throttle_yaw);
+		set_throttle(3,contrroller_throttle-action_throttle_yaw);
+		set_throttle(4,contrroller_throttle+action_throttle_yaw);
+	}
+	else
+	{
+		set_throttle(4,0);
+		set_throttle(1,0);
+		set_throttle(2,0);
+		set_throttle(3,0);
+	}
+
+
+}
+
+/*
 void PID_roll_control(){
 
 	int8_t action_throttle_roll;
-	action_throttle_roll = (int)(((desired_roll - roll)) * 0.5);
+
+	action_throttle_roll = (int)(((desired_roll - roll)) * Kp);
+
+	int32_t contrroller_throttle = pulse_length_throttle - 100;
 
 	if(action_throttle_roll > 30)
 		action_throttle_roll = 30;
 	else if(action_throttle_roll < -30)
 		action_throttle_roll = -30;
 
-	set_throttle(1,current_throttle - action_throttle_roll);
-	set_throttle(2,current_throttle - action_throttle_roll);
+	int32_t contrroller_throttle = pulse_length_throttle - 100;
 
-	set_throttle(3,current_throttle + action_throttle_roll);
-	set_throttle(4,current_throttle + action_throttle_roll);
+	if (contrroller_throttle > 10){
+		set_throttle(1,contrroller_throttle - action_throttle_roll);
+		set_throttle(2,contrroller_throttle - action_throttle_roll);
+		set_throttle(3,contrroller_throttle + action_throttle_roll);
+		set_throttle(4,contrroller_throttle + action_throttle_roll);
+	}
+	else
+	{
+		set_throttle(4,0);
+		set_throttle(1,0);
+		set_throttle(2,0);
+		set_throttle(3,0);
+	}
 
 
-}
-
+}*/
+/*
 void PID_pitch_control(){
+
 
 	int8_t action_throttle_pitch;
 
 	action_throttle_pitch = (int)(desired_pitch - pitch)*KP;
+	int32_t contrroller_throttle = pulse_length_throttle - 100;
 
 	if(action_throttle_pitch > 30)
 		action_throttle_pitch = 30;
 	else if(action_throttle_pitch < -30)
 		action_throttle_pitch = -30;
 
-	set_throttle(4,current_throttle + action_throttle_pitch);
-	set_throttle(1,current_throttle + action_throttle_pitch);
-
-	set_throttle(2,current_throttle - action_throttle_pitch);
-	set_throttle(3,current_throttle - action_throttle_pitch);
-}
-
+	if (contrroller_throttle > 10){
+		set_throttle(4,contrroller_throttle + action_throttle_pitch);
+		set_throttle(1,contrroller_throttle + action_throttle_pitch);
+		set_throttle(2,contrroller_throttle - action_throttle_pitch);
+		set_throttle(3,contrroller_throttle - action_throttle_pitch);
+	}
+	else
+	{
+		set_throttle(4,0);
+		set_throttle(1,0);
+		set_throttle(2,0);
+		set_throttle(3,0);
+	}
+}*/
+/*
 void PID_stabilization_control(){
 
 	int8_t action_throttle_roll;
 	int8_t action_throttle_pitch;
+
+	int32_t contrroller_throttle = pulse_length_throttle - 100;
 
 	action_throttle_pitch = (int8_t)(desired_pitch - pitch)*KP;
 	if(action_throttle_pitch > 30)
@@ -191,9 +259,19 @@ void PID_stabilization_control(){
 	else if(action_throttle_roll < -30)
 		action_throttle_roll = -30;
 
-	set_throttle(4,current_throttle + action_throttle_pitch + action_throttle_roll);
-	set_throttle(1,current_throttle + action_throttle_pitch - action_throttle_roll);
-	set_throttle(2,current_throttle - action_throttle_pitch - action_throttle_roll);
-	set_throttle(3,current_throttle - action_throttle_pitch + action_throttle_roll);
-}
+	if (contrroller_throttle > 10){
+		set_throttle(4,contrroller_throttle + action_throttle_pitch + action_throttle_roll);
+		set_throttle(1,contrroller_throttle + action_throttle_pitch - action_throttle_roll);
+		set_throttle(2,contrroller_throttle - action_throttle_pitch - action_throttle_roll);
+		set_throttle(3,contrroller_throttle - action_throttle_pitch + action_throttle_roll);
+	}
+	else
+	{
+		set_throttle(4,0);
+		set_throttle(1,0);
+		set_throttle(2,0);
+		set_throttle(3,0);
+	}
+
+}*/
 

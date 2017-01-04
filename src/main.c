@@ -37,6 +37,7 @@ SOFTWARE.
 #include <communication/usart.h>
 #include <device_libraries/MPU_9250.h>
 #include <device_libraries/motor_control.h>
+#include <communication/rx.h>
 
 
 /* Private typedef */
@@ -69,8 +70,7 @@ a toto
 int main(void)
 {
 	/*initializations*/
-	init_delay();
-
+ 	init_delay();
 	motor_init();
 	usart_init();
 	functions_init();
@@ -93,18 +93,17 @@ int main(void)
 	GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     //sampling
-    TIM3_sampling_timer(moveing_average_sampling*1000);
+    TIM5_sampling_timer(moveing_average_sampling*1000);
     delay_ms(moveing_average_sampling*1000*moveing_average_samples);
-
     //integrating
     TIM4_integrating_timer(angle_sampling*1000);
 
     delay_ms(1000);
-    motor_start();
+    //motor_start();
     //BLDC_Regulator_calibration();
 	while(1)
 	{
-		//USART_send_function_number(action_throttle_roll);
+		USART_send_function_number(gyroscope_data_avg[2]);
         //PID_roll_control(roll);
 		//USART_send_function_number(TIM2->CCR3);
 

@@ -9,6 +9,7 @@
 #define DEVICE_LIBRARIES_MOTOR_CONTROL_H_
 
 #define NOMINAL_THROTTLE 30
+#define MAX_THROTTLE 25
 
 #include <stddef.h>
 #include "stm32l1xx.h"
