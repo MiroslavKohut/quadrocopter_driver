@@ -19,11 +19,12 @@
 __IO float IC2Value;
 __IO float DutyCycle;
 __IO float Frequency;
-__IO uint32_t pulse_length_throttle;
-__IO uint32_t pulse_length_yaw;
+__IO int16_t pulse_length_throttle;
+__IO int16_t pulse_length_yaw;
 
 void NVIC_init(void);
 void Timer_init(void);
 void GPIO_init(void);
+void rx_init();
 
 #endif /* COMMUNICATION_RX_H_ */

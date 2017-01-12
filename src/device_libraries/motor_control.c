@@ -35,8 +35,6 @@ void set_throttle(uint8_t motor, int8_t data){
 
 	if(data > MAX_THROTTLE)
 		data = MAX_THROTTLE;
-
-
 	switch(motor)
 	{
 		case 1: {

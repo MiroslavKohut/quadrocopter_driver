@@ -19,7 +19,6 @@ void rx_init(){
 	NVIC_init();
 	GPIO_init();
 	Timer_init();
-	PWM_init(0);
 }
 void NVIC_init(void)
 {

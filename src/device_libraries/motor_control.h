@@ -9,7 +9,7 @@
 #define DEVICE_LIBRARIES_MOTOR_CONTROL_H_
 
 #define NOMINAL_THROTTLE 30
-#define MAX_THROTTLE 25
+#define MAX_THROTTLE 30
 
 #include <stddef.h>
 #include "stm32l1xx.h"
@@ -26,5 +26,6 @@ void GPIO_PWM_init(void);
 void BLDC_Regulator_calibration(void);
 void motor_init();
 void set_throttle(uint8_t motor, int8_t data);
+void PWM_init();
 
 #endif /* DEVICE_LIBRARIES_MOTOR_CONTROL_H_ */

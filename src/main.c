@@ -103,7 +103,8 @@ int main(void)
     //BLDC_Regulator_calibration();
 	while(1)
 	{
-		USART_send_function_number(gyroscope_data_avg[2]);
+
+		//USART_send_function_number(desired_yaw);
         //PID_roll_control(roll);
 		//USART_send_function_number(TIM2->CCR3);
 
