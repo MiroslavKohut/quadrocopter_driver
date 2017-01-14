@@ -43,8 +43,8 @@ int main(void)
 	global_init();
 	timers_init();
 
-	//common delay
-    delay_ms(1000);
+	/* Wait 5sec for complete calibration and controller setup */
+    delay_ms(5000);
 
     while(1)
 	{
@@ -52,9 +52,7 @@ int main(void)
 		 * Main loop, regulation and whole control is handled in timers and interrupts
 		 * This loop is only used for debugging
 		 */
-
 		//USART_send_function_number(desired_yaw);
-		//USART_send_function_number(TIM2->CCR3);
 	}
 	return 0;
 }

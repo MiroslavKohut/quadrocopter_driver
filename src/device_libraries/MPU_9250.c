@@ -8,7 +8,9 @@
 
 #define MPU_InitRegNum 17
 
+/* basic mpu init*/
 uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
+	/* Spi init and delay init needed */
 	init_delay();
 	uint8_t i = 0;
     init_SPI1();
@@ -16,7 +18,7 @@ uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
     uint8_t MPU_Init_Data[MPU_InitRegNum][2] = {
         {0x80, MPUREG_PWR_MGMT_1},     // Reset Device
         {0x01, MPUREG_PWR_MGMT_1},     // Clock Source
-        {0x00, MPUREG_PWR_MGMT_2},     // Enable Acc & Gyro
+        {0x00, MPUREG_PWR_MGMT_2},    			 // Enable Acc & Gyro
         {low_pass_filter, MPUREG_CONFIG},         // Use DLPF set Gyroscope bandwidth 184Hz, temperature bandwidth 188Hz
         {0x18, MPUREG_GYRO_CONFIG},    // +-2000dps
         {0x08, MPUREG_ACCEL_CONFIG},   // +-4G
@@ -47,6 +49,7 @@ uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter){
     return 0;
 }
 
+/* accelerometer setup */
 uint32_t  set_acc_scale(int scale){
     unsigned int temp_scale;
     write_reg(MPUREG_ACCEL_CONFIG, scale);
@@ -84,6 +87,7 @@ uint32_t  set_acc_scale(int scale){
     return temp_scale;
 }
 
+/* gyroscope setup */
 uint32_t set_gyro_scale(int scale){
     unsigned int temp_scale;
     write_reg(MPUREG_GYRO_CONFIG, scale);
@@ -119,6 +123,7 @@ uint32_t set_gyro_scale(int scale){
     return temp_scale;
 }
 
+/* Accelerometer calibration */
 void calib_acc()
 {
     uint8_t response[4];
@@ -126,8 +131,6 @@ void calib_acc()
     //READ CURRENT ACC SCALE
     temp_scale=read_reg(READ_FLAG | MPUREG_ACCEL_CONFIG);
     set_acc_scale(BITS_FS_8G);
-    //ENABLE SELF TEST need modify
-    //temp_scale=WriteReg(MPUREG_ACCEL_CONFIG, 0x80>>axis);
 
     read_regs(READ_FLAG |MPUREG_SELF_TEST_X,response,4);
     calib_data[0]=((response[0]&11100000)>>3)|((response[3]&00110000)>>4);
@@ -137,6 +140,7 @@ void calib_acc()
     set_acc_scale(temp_scale);
 }
 
+/* Accelerometer reading */
 void read_acc()
 {
     uint8_t response[6];
@@ -151,6 +155,7 @@ void read_acc()
     }
 }
 
+/* Gyroscope reading functiions */
 void read_rot()
 {
     uint8_t response[6];

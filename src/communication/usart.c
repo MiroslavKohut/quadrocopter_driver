@@ -3,6 +3,7 @@
  *
  *  Created on: 18. 12. 2016
  *      Author: Miroslav Kohút
+ *      Usart library is mainly used for debug and calibrations
  */
 
 #include <communication/usart.h>
@@ -27,7 +28,7 @@ void usart_init(){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
 	USART_InitTypeDef USART_InitStructure;
-	USART_InitStructure.USART_BaudRate = 9600;
+	USART_InitStructure.USART_BaudRate = BAUDRATE;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -36,7 +37,7 @@ void usart_init(){
 	USART_Init(USART2, &USART_InitStructure);
 	USART_Cmd(USART2, ENABLE);
 
-	//interrupt
+	/* Interupt */
 	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
@@ -50,6 +51,7 @@ void usart_init(){
 	NVIC_Init(&NVIC_InitStructure);
 }
 
+/* Sending basic chars */
 void USART_send_function(char text[]){
 
 	uint16_t i = 0;
@@ -61,6 +63,8 @@ void USART_send_function(char text[]){
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 
 }
+
+/* Sending float numbers */
 void USART_send_function_number(float number){
 
 	uint16_t i = 0;
@@ -82,31 +86,14 @@ void USART_send_function_number(float number){
 	while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
 
 }
-/*
+
+/* Handler for receiving data and adding to rec_data global variable */
 void USART2_IRQHandler(void)
 {
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
 	{
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
 		rec_data = USART_ReceiveData(USART2);
-		if (rec_data == '+'){
-			TIM2->CCR1 += 5;
-			TIM2->CCR2 += 5;
-			TIM2->CCR3 += 5;
-			TIM2->CCR4 += 5;
-		}
-		else if (rec_data == '-'){
-			TIM2->CCR1 -= 5;
-			TIM2->CCR2 -= 5;
-			TIM2->CCR3 -= 5;
-			TIM2->CCR4 -= 5;
-		}
-		else{
-			TIM2->CCR1 = 100;
-			TIM2->CCR2 = 100;
-			TIM2->CCR3 = 100;
-			TIM2->CCR4 = 100;
-		}
     }
-}*/
+}
 
