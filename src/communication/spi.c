@@ -61,6 +61,7 @@ void write_reg(uint8_t WriteAddr, uint8_t WriteData )
 	SPI_I2S_SendData(SPI1, WriteData);
 	while(!SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE));
 	SPI_I2S_ReceiveData(SPI1);
+
 	chip_deselect();
 }
 

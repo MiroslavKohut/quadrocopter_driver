@@ -23,6 +23,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l1xx_it.h"
+#include "common/delay.h"
 /* #include "main.h" */
 
 /** @addtogroup Template_Project

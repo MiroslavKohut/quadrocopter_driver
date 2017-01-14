@@ -100,10 +100,7 @@ void TIM9_IRQHandler(void)
 	if (TIM_GetITStatus(TIM9, TIM_IT_CC2) != RESET)
 	{
 	  TIM_ClearFlag(TIM9, TIM_IT_CC2);
-	  /* Clear TIM3 Capture compare interrupt pending bit */
 	  TIM_ClearITPendingBit(TIM9, TIM_IT_CC1);
-
-	  /* Get the Input Capture value */
 	  IC2Value = TIM_GetCapture2(TIM9);
 
 	  if (IC2Value != 0)
@@ -129,20 +126,15 @@ void TIM3_IRQHandler(void)
 	if (TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET)
 	{
 	  TIM_ClearFlag(TIM3, TIM_IT_CC2);
-	  /* Clear TIM3 Capture compare interrupt pending bit */
 	  TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
-
-	  /* Get the Input Capture value */
 	  IC2Value = TIM_GetCapture2(TIM3);
 
 	  if (IC2Value != 0)
 	  {
 		/* Duty cycle computation */
 		DutyCycle = (TIM_GetCapture1(TIM3) * 100) / IC2Value;
-
 		/* Pulse length computation */
 		pulse_length_yaw = ceil(161 * DutyCycle / 100);
-
 		/* Frequency computation */
 		Frequency = SystemCoreClock / IC2Value;
 	  }

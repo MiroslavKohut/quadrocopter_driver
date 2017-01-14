@@ -38,19 +38,19 @@ void set_throttle(uint8_t motor, int8_t data){
 	switch(motor)
 	{
 		case 1: {
-			TIM2->CCR1 = 100+(int8_t)(data);
+			TIM2->CCR1 = MINIMAL_THROTTLE_VALUE +(int8_t)(data);
 			break;
 		}
 		case 2: {
-			TIM2->CCR2 = 100+(int8_t)(data);
+			TIM2->CCR2 = MINIMAL_THROTTLE_VALUE +(int8_t)(data);
 			break;
 		}
 		case 3: {
-			TIM2->CCR3 = 100+(int8_t)(data);
+			TIM2->CCR3 = MINIMAL_THROTTLE_VALUE +(int8_t)(data);
 			break;
 		}
 		case 4: {
-			TIM2->CCR4 = 100+(int8_t)(data);
+			TIM2->CCR4 = MINIMAL_THROTTLE_VALUE +(int8_t)(data);
 			break;
 		}
 	}
@@ -63,9 +63,9 @@ void TIM2_PWM_init(void)
 	TIM_TimeBaseInitTypeDef TIM_BaseStruct;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
-	TIM_BaseStruct.TIM_Prescaler = 160;
+	TIM_BaseStruct.TIM_Prescaler = PRESCELER;
 	TIM_BaseStruct.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_BaseStruct.TIM_Period = 1999; // f[Hz] PWM bude 50hz, nastavenie periody casovaca
+    TIM_BaseStruct.TIM_Period = TIMER_PERIOD; // f[Hz] PWM = 50hz
     TIM_BaseStruct.TIM_ClockDivision = TIM_CKD_DIV1;
 
     TIM_TimeBaseInit(TIM2, &TIM_BaseStruct);
@@ -123,53 +123,3 @@ void GPIO_PWM_init(void)
     GPIO_Button.GPIO_Mode = GPIO_Mode_IN;
     GPIO_Init(GPIOC, &GPIO_Button);
 }
-/*
-void BLDC_Regulator_calibration(void)
-{
-	uint8_t button = 0, buttonState = 0;
-
-	while(1)
-	{
-	  button = GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13);
-
-
-	  if (button == 0)
-	  {
-		  while (button == 0)
-		  {
-			  button = GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13);
-		  }
-		  if (buttonState == 0)
-		  {
-			  buttonState = 1;
-		  }
-		  else
-		  {
-			  buttonState = 0;
-		  }
-
-		  if (buttonState == 1)
-		  {
-
-			  TIM2->CCR1 = 100;
-			  TIM2->CCR2 = 100;
-			  TIM2->CCR3 = 100;
-			  TIM2->CCR4 = 100;
-		  }
-		  else if (buttonState == 0)
-		  {
-			  TIM2->CCR1 = 120;
-			  TIM2->CCR2 = 120;
-			  TIM2->CCR3 = 120;
-			  TIM2->CCR4 = 120;
-			  delay_ms(10000);
-			  TIM2->CCR1 = 100;
-			  TIM2->CCR2 = 100;
-			  TIM2->CCR3 = 100;
-			  TIM2->CCR4 = 100;
-			  delay_ms(3000);
-			  break;
-		  }
-	  }
-	}
-}*/

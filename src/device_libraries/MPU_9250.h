@@ -2,7 +2,7 @@
  * MPU_9250.h
  *
  *  Created on: 3. 12. 2016
- *      Author: Asus
+ *      Author: Miroslav Kohút
  */
 
 #ifndef MPU_9250_H_
@@ -11,31 +11,27 @@
 #include <communication/spi.h>
 #include <common/delay.h>
 
-//variables
+/* Variables */
 float acc_divider;
 float gyro_divider;
 
 int calib_data[3];
-float Magnetometer_ASA[3];
 
 float accelerometer_data[3];
-float Temperature;
 float gyroscope_data[3];
 float gyroscope_angle[3];
-float Magnetometer[3];
 
-//functions
+/* Initialization functions */
 uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter);
 uint32_t set_acc_scale(int scale);
 uint32_t set_gyro_scale(int scale);
+
+/* Calibration and reading functions */
 void calib_acc();
 void read_acc();
 void read_rot();
 
-#endif /* MPU_9250_H_ */
-
 /* MPU 9250 registers define */
-
 #define MPUREG_XG_OFFS_TC 0x00
 #define MPUREG_YG_OFFS_TC 0x01
 #define MPUREG_ZG_OFFS_TC 0x02
@@ -228,4 +224,5 @@ void read_rot();
 
 #define     Magnetometer_Sensitivity_Scale_Factor ((float)0.15f)
 
+#endif /* MPU_9250_H_ */
 
