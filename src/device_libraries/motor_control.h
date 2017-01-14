@@ -10,6 +10,10 @@
 
 #define NOMINAL_THROTTLE 30
 #define MAX_THROTTLE 30
+#define MINIMAL_THROTTLE_VALUE 100
+
+#define PRESCELER 160
+#define TIMER_PERIOD 1999
 
 #include <stddef.h>
 #include "stm32l1xx.h"
