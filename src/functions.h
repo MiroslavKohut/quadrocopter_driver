@@ -14,13 +14,14 @@
 #include <stdio.h>
 
 //common includes
+#include "common/pid_controller.h"
 #include "common/delay.h"
 #include "device_libraries/MPU_9250.h"
 #include "device_libraries/motor_control.h"
 #include "communication/rx.h"
 
 //PID CONSTANTS
-#define KP_yaw ((float)0.25)
+#define KP_yaw ((float)0.025)
 #define KP_roll ((float)0.25)
 #define KP_pitch ((float)0.25)
 //constats
@@ -41,6 +42,7 @@ float yaw;
 float desired_roll;
 float desired_pitch;
 float desired_yaw;
+extern int8_t diff, olddiff, deltadiff;
 
 float nominal_throttle;
 //Timers

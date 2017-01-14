@@ -9,9 +9,12 @@
 
 // function sleep for specific time in def, +- 2 us
 
+int8_t diff = 0, olddiff = 0, deltadiff = 0;
+
 void functions_init(){
 
 	rx_init();
+
 	desired_roll = 0;
 	desired_pitch = 0;
 	desired_yaw = 0;
@@ -112,9 +115,12 @@ void TIM5_IRQHandler()
 }
 
 /**COMPLEMENTARY FILTER **/
+
 void complementary_filter()
 {
 	float pitchAcc, rollAcc;
+
+    // Integrate the gyroscope data -> int(angularSpeed) = angle
 
 	if (!(gyroscope_data_avg[0] < 2 && gyroscope_data_avg[0] > -2)){
 		roll = roll + gyroscope_data_avg[0] * angle_sampling;
@@ -141,7 +147,12 @@ void PID_yaw_control(){
 	int8_t action_throttle_yaw;
 
 	desired_yaw = (float)(pulse_length_yaw - 150)*4;
-	action_throttle_yaw = (int)(((desired_yaw - gyroscope_data_avg[2])) * KP_yaw);
+//	action_throttle_yaw = (int)(((desired_yaw - gyroscope_data_avg[2])) * KP_yaw);
+
+	diff = desired_yaw - gyroscope_data_avg[2];
+	deltadiff = diff-olddiff;
+	action_throttle_yaw = (int)(deltadiff * 0.005 + KP_yaw * diff);
+	olddiff = diff;
 
 	if(action_throttle_yaw > 15)
 		action_throttle_yaw = 15;
