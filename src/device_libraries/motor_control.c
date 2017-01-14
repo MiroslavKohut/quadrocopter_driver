@@ -70,6 +70,7 @@ void TIM2_PWM_init(void)
 
     TIM_TimeBaseInit(TIM2, &TIM_BaseStruct);
     TIM_Cmd(TIM2, ENABLE);
+
 }
 
 void PWM_init(void)
