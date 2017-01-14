@@ -3,12 +3,15 @@
  *
  *  Created on: 27. 11. 2016
  *      Author: Miroslav Kohút
+ *      Basic functions for main program. All needed controllers are implemented int this library and
+ *      also raw data from imu are read and filtered here.
  */
 /* Includes */
 #include <functions.h>
 
 /* Functions */
 
+/* Global main initialization */
 void global_init(){
 
 	/******* Common init ******/
@@ -46,20 +49,20 @@ void global_init(){
 
     return;
 }
-
+/* Global main timer initialization */
 void timers_init(){
     //sampling timer
     TIM5_sampling_timer(moveing_average_sampling*1000);
     delay_ms(moveing_average_sampling*1000*moveing_average_samples);
 
     //integrating and controller timer
-    TIM4_integrating_timer(angle_sampling*1000);
+    TIM4_controller_timer(angle_sampling*1000);
 }
 
-void TIM4_integrating_timer(int period_in_miliseconds)
+void TIM4_controller_timer(int period_in_miliseconds)
 {
-	uint32_t SystemTimeClock = 16000000;		//mame 16MHz vstup!!!
-	unsigned short inputPeriodValue = 10000;		//input clock = 10000Hz = 0,1ms
+	uint32_t SystemTimeClock = DEFAULT_FREQUENCY;
+	unsigned short inputPeriodValue = INPUT_CLOCK;
 	unsigned short prescalerValue = (unsigned short) (SystemTimeClock / inputPeriodValue) - 1;
 
 	/*Structure for timer settings*/
@@ -70,11 +73,13 @@ void TIM4_integrating_timer(int period_in_miliseconds)
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseStructure.TIM_Prescaler = prescalerValue;
 	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+
 	/* TIM Interrupts enable */
 	TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
 	TIM_Cmd(TIM4, ENABLE);
 
 	NVIC_InitTypeDef NVIC_InitStructure;
+
 	/* Enable the TIM4 gloabal Interrupt */
 	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
@@ -85,8 +90,8 @@ void TIM4_integrating_timer(int period_in_miliseconds)
 
 void TIM5_sampling_timer(int period_in_miliseconds)
 {
-	uint32_t SystemTimeClock = 16000000;		//mame 16MHz vstup!!!
-	unsigned short inputPeriodValue = 10000;		//input clock = 10000Hz = 0,1ms
+	uint32_t SystemTimeClock = DEFAULT_FREQUENCY;
+	unsigned short inputPeriodValue = INPUT_CLOCK;
 	unsigned short prescalerValue = (unsigned short) (SystemTimeClock / inputPeriodValue) - 1;
 
 	/*Structure for timer settings*/
@@ -110,14 +115,14 @@ void TIM5_sampling_timer(int period_in_miliseconds)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-
-
 void TIM4_IRQHandler()
 {
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+
         complementary_filter();
+        /* For another controller testing you can add specific controller function*/
         PID_yaw_control();
         //PID_pitch_control();
         //PID_stabilization_control();
@@ -126,10 +131,10 @@ void TIM4_IRQHandler()
 
 void TIM5_IRQHandler()
 {
-	GPIO_ResetBits(GPIOA, GPIO_Pin_10);
     if (TIM_GetITStatus(TIM5, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
+        /* reading data from imu with specific sample rate and implementing moveing average with specific number of samples */
         read_rot();
         for(uint8_t i = 0;i<3;i++){
         	gyroscope_data_avg[i]= (gyroscope_data_avg[i]*(moveing_average_samples-1) + gyroscope_data[i])/moveing_average_samples;
@@ -139,10 +144,9 @@ void TIM5_IRQHandler()
         	accelerometer_data_avg[i]= (accelerometer_data_avg[i]*(moveing_average_samples-1) + accelerometer_data[i])/moveing_average_samples;
         }
     }
-    GPIO_SetBits(GPIOA, GPIO_Pin_10);
 }
 
-/**COMPLEMENTARY FILTER **/
+/* COMPLEMENTARY FILTER */
 void complementary_filter()
 {
 	float pitchAcc, rollAcc;
@@ -166,20 +170,21 @@ void complementary_filter()
     pitch = pitch * 0.6 + pitchAcc * 0.4;
 
 }
-//tested
+
+/* Yaw controller tested */
 void PID_yaw_control(){
 
 	int8_t action_throttle_yaw;
 
-	desired_yaw = (float)(pulse_length_yaw - 150)*4;
+	desired_yaw = (float)(pulse_length_yaw - YAW_CONSTANT)*4;
 	action_throttle_yaw = (int)(((desired_yaw - gyroscope_data_avg[2])) * KP_yaw);
+	int32_t controller_throttle = pulse_length_throttle - THROTTLE_CONSTANT;
 
-	if(action_throttle_yaw > 15)
-		action_throttle_yaw = 15;
-	else if(action_throttle_yaw < -15)
-		action_throttle_yaw = -15;
+	if(action_throttle_yaw > MAXIMUM_SATURATION_YAW)
+		action_throttle_yaw = MAXIMUM_SATURATION_YAW;
+	else if(action_throttle_yaw < -MAXIMUM_SATURATION_YAW)
+		action_throttle_yaw = -MAXIMUM_SATURATION_YAW;
 
-	int32_t controller_throttle = pulse_length_throttle - 100;
 
 	if(controller_throttle > MAX_THROTTLE)
 		controller_throttle = MAX_THROTTLE;
@@ -187,7 +192,7 @@ void PID_yaw_control(){
 	if (controller_throttle + action_throttle_yaw > MAX_THROTTLE)
 		controller_throttle = controller_throttle - (controller_throttle + action_throttle_yaw - MAX_THROTTLE);
 
-	if (controller_throttle > 5){
+	if (controller_throttle > MINIMUM_SATURATION){
 		set_throttle(1,controller_throttle-action_throttle_yaw);
 		set_throttle(2,controller_throttle+action_throttle_yaw);
 		set_throttle(3,controller_throttle-action_throttle_yaw);
@@ -201,7 +206,8 @@ void PID_yaw_control(){
 		set_throttle(3,0);
 	}
 }
-// not tested and optimalization needed
+
+/* Not tested and some  optimization needed */
 void PID_roll_control(){
 
 	int8_t action_throttle_roll;
@@ -210,12 +216,12 @@ void PID_roll_control(){
 
 	int32_t controller_throttle = pulse_length_throttle - 100;
 
-	if(action_throttle_roll > 20)
-		action_throttle_roll = 20;
-	else if(action_throttle_roll < -20)
-		action_throttle_roll = -20;
+	if(action_throttle_roll > MAXIMUM_SATURATION_ROLL)
+		action_throttle_roll = MAXIMUM_SATURATION_ROLL;
+	else if(action_throttle_roll < -MAXIMUM_SATURATION_ROLL)
+		action_throttle_roll = -MAXIMUM_SATURATION_ROLL;
 
-	if (controller_throttle > 10){
+	if (controller_throttle > MINIMUM_SATURATION){
 		set_throttle(1,controller_throttle - action_throttle_roll);
 		set_throttle(2,controller_throttle - action_throttle_roll);
 		set_throttle(3,controller_throttle + action_throttle_roll);
@@ -231,7 +237,8 @@ void PID_roll_control(){
 
 
 }
-// not tested and optimalization needed
+
+/* Not tested and some  optimization needed */
 void PID_pitch_control(){
 
 	int8_t action_throttle_pitch;
@@ -239,12 +246,12 @@ void PID_pitch_control(){
 	action_throttle_pitch = (int)(desired_pitch - pitch)*KP_pitch;
 	int32_t controller_throttle = pulse_length_throttle - 100;
 
-	if(action_throttle_pitch > 20)
-		action_throttle_pitch = 20;
-	else if(action_throttle_pitch < -20)
-		action_throttle_pitch = -20;
+	if(action_throttle_pitch > MAXIMUM_SATURATION_PITCH)
+		action_throttle_pitch = MAXIMUM_SATURATION_PITCH;
+	else if(action_throttle_pitch < -MAXIMUM_SATURATION_PITCH)
+		action_throttle_pitch = -MAXIMUM_SATURATION_PITCH;
 
-	if (controller_throttle > 10){
+	if (controller_throttle > MINIMUM_SATURATION){
 		set_throttle(4,controller_throttle + action_throttle_pitch);
 		set_throttle(1,controller_throttle + action_throttle_pitch);
 		set_throttle(2,controller_throttle - action_throttle_pitch);
@@ -258,33 +265,34 @@ void PID_pitch_control(){
 		set_throttle(3,0);
 	}
 }
-// not tested and optimalization needed
+
+/* Not tested and some  optimization needed */
 void PID_stabilization_control(){
 
 	int8_t action_throttle_yaw;
 	int8_t action_throttle_roll;
 	int8_t action_throttle_pitch;
 
-	int32_t controller_throttle = pulse_length_throttle - 100;
-	desired_yaw = (float)(pulse_length_yaw - 150)*4;
+	int32_t controller_throttle = pulse_length_throttle - THROTTLE_CONSTANT;
+	desired_yaw = (float)(pulse_length_yaw - YAW_CONSTANT)*4;
 
 	action_throttle_yaw = (int)(((desired_yaw - gyroscope_data_avg[2])) * KP_yaw);
-	if(action_throttle_yaw > 20)
-		action_throttle_yaw = 20;
-	else if(action_throttle_yaw < -20)
-		action_throttle_yaw = -20;
+	if(action_throttle_yaw > MAXIMUM_SATURATION_YAW)
+		action_throttle_yaw = MAXIMUM_SATURATION_YAW;
+	else if(action_throttle_yaw < -MAXIMUM_SATURATION_YAW)
+		action_throttle_yaw = -MAXIMUM_SATURATION_YAW;
 
 	action_throttle_pitch = (int8_t)(desired_pitch - pitch)*KP_pitch;
-	if(action_throttle_pitch > 20)
-		action_throttle_pitch = 20;
-	else if(action_throttle_pitch < -20)
-		action_throttle_pitch = -20;
+	if(action_throttle_pitch > MAXIMUM_SATURATION_PITCH)
+		action_throttle_pitch = MAXIMUM_SATURATION_PITCH;
+	else if(action_throttle_pitch < -MAXIMUM_SATURATION_PITCH)
+		action_throttle_pitch = -MAXIMUM_SATURATION_PITCH;
 
 	action_throttle_roll = (int8_t)(desired_roll - roll)*KP_roll;
-	if(action_throttle_roll > 20)
-		action_throttle_roll = 20;
-	else if(action_throttle_roll < -20)
-		action_throttle_roll = -20;
+	if(action_throttle_roll > MAXIMUM_SATURATION_ROLL)
+		action_throttle_roll = MAXIMUM_SATURATION_ROLL;
+	else if(action_throttle_roll < -MAXIMUM_SATURATION_ROLL)
+		action_throttle_roll = -MAXIMUM_SATURATION_ROLL;
 
 	if(controller_throttle > MAX_THROTTLE)
 		controller_throttle = MAX_THROTTLE;
@@ -294,7 +302,7 @@ void PID_stabilization_control(){
 	if (controller_throttle + action_throttle_PID > MAX_THROTTLE)
 		controller_throttle = controller_throttle - (controller_throttle + action_throttle_PID - MAX_THROTTLE);
 
-	if (controller_throttle > 5){
+	if (controller_throttle > MINIMUM_SATURATION){
 		set_throttle(4,controller_throttle + action_throttle_pitch + action_throttle_roll+action_throttle_yaw);
 		set_throttle(1,controller_throttle + action_throttle_pitch - action_throttle_roll-action_throttle_yaw);
 		set_throttle(2,controller_throttle - action_throttle_pitch - action_throttle_roll+action_throttle_yaw);
