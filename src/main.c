@@ -25,93 +25,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************
 */
-//Includes
 
-#define ARM_MATH_CM3
-#undef A0
-#undef A1
-#undef A2
-#include <arm_math.h>
-
+/* Includes */
 #include <functions.h>
-#include <communication/usart.h>
-#include <device_libraries/MPU_9250.h>
-#include <device_libraries/motor_control.h>
-#include <communication/rx.h>
-
-
-/* Private typedef */
-
-
-/* Private define  */
-
-/* Private macro */
-
-/* Private variables */
-
-uint64_t c;
-
-/* Private function prototypes */
-
-/* Private functions */
-/*
-arm_pid_instance_f32 PID;
-a toto
- duty = arm_pid_f32(&PID, pid_error);*/
-
 
 /**
 **===========================================================================
 **
-**  Abstract: main program
+**  Abstract: main program for quadrocopter control. Program use function.h libraries.
 **
 **===========================================================================
 */
+
 int main(void)
 {
-	/*initializations*/
- 	init_delay();
-	motor_init();
-	usart_init();
-	functions_init();
+	/* Initializations */
+	global_init();
+	timers_init();
 
-	if(mpu9250_init(1,BITS_DLPF_CFG_188HZ)){  //INIT the mpu9250
-    	USART_send_function("\nCouldn't initialize MPU9250 via SPI!\r");
-    }
-    else
-    	USART_send_function("\nMPU9250 WAS SUCCESFULLY INITIALIZED!\r");
-
-	calib_acc();
-    delay_ms(500);
-
-    GPIO_InitTypeDef GPIO_InitStruct;
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
-	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_40MHz;
-	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
-	GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    //sampling
-    TIM5_sampling_timer(moveing_average_sampling*1000);
-    delay_ms(moveing_average_sampling*1000*moveing_average_samples);
-    //integrating
-    TIM4_integrating_timer(angle_sampling*1000);
-
+	//common delay
     delay_ms(1000);
-    //motor_start();
-    //BLDC_Regulator_calibration();
-	while(1)
+
+    while(1)
 	{
+		/*
+		 * Main loop, regulation and whole control is handled in timers and interrupts
+		 * This loop is only used for debugging
+		 */
 
 		//USART_send_function_number(desired_yaw);
-        //PID_roll_control(roll);
 		//USART_send_function_number(TIM2->CCR3);
-
 	}
 	return 0;
 }
-
 #ifdef  USE_FULL_ASSERT
 
 /**

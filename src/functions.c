@@ -2,16 +2,20 @@
  * functions.c
  *
  *  Created on: 27. 11. 2016
- *      Author: Asus
+ *      Author: Miroslav Kohút
  */
 /* Includes */
 #include <functions.h>
 
-// function sleep for specific time in def, +- 2 us
+/* Functions */
 
-void functions_init(){
+void global_init(){
 
-	rx_init();
+	/******* Common init ******/
+	//needs to be initialized every function used delay library
+	init_delay();
+
+	/******* Variables init *******/
 	desired_roll = 0;
 	desired_pitch = 0;
 	desired_yaw = 0;
@@ -22,7 +26,34 @@ void functions_init(){
     for(uint8_t i = 0;i<3;i++){
     	accelerometer_data_avg[i] = 0;
     }
+
+	/****** Communication init *******/
+	rx_init();
+	usart_init();
+	//spi is initialized inside of IMU unit
+
+	/****** Devices_init *******/
+	motor_init();
+
+	if(mpu9250_init(1,BITS_DLPF_CFG_188HZ)){  //INIT the mpu9250
+    	USART_send_function("\nCouldn't initialize MPU9250 via SPI!\r");
+    }
+    else
+    	USART_send_function("\nMPU9250 WAS SUCCESFULLY INITIALIZED!\r");
+
+	calib_acc();
+    delay_ms(1000);
+
     return;
+}
+
+void timers_init(){
+    //sampling timer
+    TIM5_sampling_timer(moveing_average_sampling*1000);
+    delay_ms(moveing_average_sampling*1000*moveing_average_samples);
+
+    //integrating and controller timer
+    TIM4_integrating_timer(angle_sampling*1000);
 }
 
 void TIM4_integrating_timer(int period_in_miliseconds)

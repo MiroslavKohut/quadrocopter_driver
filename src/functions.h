@@ -18,6 +18,8 @@
 #include "device_libraries/MPU_9250.h"
 #include "device_libraries/motor_control.h"
 #include "communication/rx.h"
+#include "communication/usart.h"
+#include "device_libraries/motor_control.h"
 
 //PID CONSTANTS
 #define KP_yaw ((float)0.25)
@@ -56,6 +58,7 @@ void PID_stabilization_control();
 void PID_yaw_control();
 void PID_pitch_control();
 void PID_roll_control();
-void functions_init();;
+void global_init();
+void timers_init();
 
 #endif /* FUNCTIONS_H_ */
