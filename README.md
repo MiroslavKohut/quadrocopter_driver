@@ -6,7 +6,7 @@ https://github.com/MiroslavKohut/quadrocopter_driver/blob/master/Documentation/i
 
 # quadrocopter_driver
 This repository contains experimental code for PID quadrocopter control using MPU9250 and radio control. Yaw axis is tested and calibrated.
-Pitch and roll axis are prepared for PID calibration. For yaw axis control we are using P regulator with raw data from gyroscope filtered with Moveing average filter.
+Pitch and roll axis are prepared for PID calibration. For yaw axis control we use P regulator with raw data from gyroscope filtered with Moving average filter.
 We also implemented complementary filter for pitch and roll rotation. Filtering of data works fine but Controller still needs a better calibration and testing.
 We do not suggest to edit the code. Only at your own risk.
 
