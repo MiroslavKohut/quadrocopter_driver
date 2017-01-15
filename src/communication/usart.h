@@ -25,7 +25,7 @@ float rec_data;
 /* Initialization*/
 void usart_init();
 
-void USART_send_function();
+void USART_send_function(char text[]);
 void USART_send_function_number(float number);
 
 #endif

@@ -19,7 +19,6 @@ int calib_data[3];
 
 float accelerometer_data[3];
 float gyroscope_data[3];
-float gyroscope_angle[3];
 
 /* Initialization functions */
 uint8_t  mpu9250_init(int sample_rate_div,int low_pass_filter);

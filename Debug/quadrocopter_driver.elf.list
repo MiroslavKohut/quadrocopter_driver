@@ -15,29 +15,29 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   5 .data         0000003c  20000000  080042ac  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .bss          000000a0  2000003c  080042e8  0002003c  2**2
+  6 .bss          00000094  2000003c  080042e8  0002003c  2**2
                   ALLOC
-  7 ._user_heap_stack 00000400  200000dc  080042e8  000200dc  2**0
+  7 ._user_heap_stack 00000400  200000d0  080042e8  000200d0  2**0
                   ALLOC
   8 .ARM.attributes 00000029  00000000  00000000  0002003c  2**0
                   CONTENTS, READONLY
-  9 .debug_info   00007b0f  00000000  00000000  00020065  2**0
+  9 .debug_info   00007adc  00000000  00000000  00020065  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_abbrev 00001658  00000000  00000000  00027b74  2**0
+ 10 .debug_abbrev 00001658  00000000  00000000  00027b41  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_aranges 00000988  00000000  00000000  000291d0  2**3
+ 11 .debug_aranges 00000988  00000000  00000000  000291a0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000880  00000000  00000000  00029b58  2**3
+ 12 .debug_ranges 00000880  00000000  00000000  00029b28  2**3
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_line   0000369d  00000000  00000000  0002a3d8  2**0
+ 13 .debug_line   0000369d  00000000  00000000  0002a3a8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    0000290c  00000000  00000000  0002da75  2**0
+ 14 .debug_str    000028fc  00000000  00000000  0002da45  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .comment      0000007e  00000000  00000000  00030381  2**0
+ 15 .comment      0000007e  00000000  00000000  00030341  2**0
                   CONTENTS, READONLY
- 16 .debug_frame  000027b8  00000000  00000000  00030400  2**2
+ 16 .debug_frame  000027b8  00000000  00000000  000303c0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 17 .stabstr      0000003f  00000000  00000000  00032bb8  2**0
+ 17 .stabstr      0000003f  00000000  00000000  00032b78  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -5849,6 +5849,8 @@ void init_SPI1(void){
  8002812:	481c      	ldr	r0, [pc, #112]	; (8002884 <init_SPI1+0xb8>)
  8002814:	f7fe fd9c 	bl	8001350 <GPIO_PinAFConfig>
 
+	/* Chipselect */
+
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8;
  8002818:	f44f 7380 	mov.w	r3, #256	; 0x100
  800281c:	61bb      	str	r3, [r7, #24]
@@ -7236,6 +7238,7 @@ void TIM2_PWM_init(void)
  80031b8:	2101      	movs	r1, #1
  80031ba:	f04f 4080 	mov.w	r0, #1073741824	; 0x40000000
  80031be:	f7fe fb2f 	bl	8001820 <TIM_Cmd>
+
 }
  80031c2:	bf00      	nop
  80031c4:	3710      	adds	r7, #16
@@ -7538,11 +7541,11 @@ void global_init(){
  8003396:	46bd      	mov	sp, r7
  8003398:	bd80      	pop	{r7, pc}
  800339a:	bf00      	nop
- 800339c:	200000b4 	.word	0x200000b4
- 80033a0:	200000ac 	.word	0x200000ac
- 80033a4:	200000b0 	.word	0x200000b0
- 80033a8:	200000c4 	.word	0x200000c4
- 80033ac:	200000b8 	.word	0x200000b8
+ 800339c:	200000a8 	.word	0x200000a8
+ 80033a0:	200000a0 	.word	0x200000a0
+ 80033a4:	200000a4 	.word	0x200000a4
+ 80033a8:	200000b8 	.word	0x200000b8
+ 80033ac:	200000ac 	.word	0x200000ac
  80033b0:	08004234 	.word	0x08004234
  80033b4:	0800425c 	.word	0x0800425c
 
@@ -7892,10 +7895,10 @@ void TIM5_IRQHandler()
  80035d4:	46bd      	mov	sp, r7
  80035d6:	bd90      	pop	{r4, r7, pc}
  80035d8:	40000c00 	.word	0x40000c00
- 80035dc:	200000c4 	.word	0x200000c4
+ 80035dc:	200000b8 	.word	0x200000b8
  80035e0:	2000008c 	.word	0x2000008c
  80035e4:	40400000 	.word	0x40400000
- 80035e8:	200000b8 	.word	0x200000b8
+ 80035e8:	200000ac 	.word	0x200000ac
  80035ec:	20000074 	.word	0x20000074
 
 080035f0 <complementary_filter>:
@@ -8193,12 +8196,12 @@ void complementary_filter()
  8003874:	3fe33333 	.word	0x3fe33333
  8003878:	9999999a 	.word	0x9999999a
  800387c:	3fd99999 	.word	0x3fd99999
- 8003880:	200000c4 	.word	0x200000c4
+ 8003880:	200000b8 	.word	0x200000b8
  8003884:	3c23d70a 	.word	0x3c23d70a
- 8003888:	200000d8 	.word	0x200000d8
- 800388c:	200000d4 	.word	0x200000d4
- 8003890:	200000d0 	.word	0x200000d0
- 8003894:	200000b8 	.word	0x200000b8
+ 8003888:	200000cc 	.word	0x200000cc
+ 800388c:	200000c8 	.word	0x200000c8
+ 8003890:	200000c4 	.word	0x200000c4
+ 8003894:	200000ac 	.word	0x200000ac
  8003898:	43340000 	.word	0x43340000
 
 0800389c <PID_yaw_control>:
@@ -8369,8 +8372,8 @@ void PID_yaw_control(){
  80039b4:	46bd      	mov	sp, r7
  80039b6:	bd80      	pop	{r7, pc}
  80039b8:	20000068 	.word	0x20000068
- 80039bc:	200000b0 	.word	0x200000b0
- 80039c0:	200000c4 	.word	0x200000c4
+ 80039bc:	200000a4 	.word	0x200000a4
+ 80039c0:	200000b8 	.word	0x200000b8
  80039c4:	20000060 	.word	0x20000060
 
 080039c8 <main>:
@@ -8389,7 +8392,7 @@ int main(void)
  80039d0:	f7ff fcf2 	bl	80033b8 <timers_init>
 
 	/* Wait 5sec for complete calibration and controller setup */
-    delay_ms(5000);
+	delay_ms(5000);
  80039d4:	f241 3088 	movw	r0, #5000	; 0x1388
  80039d8:	f7fe fd04 	bl	80023e4 <delay_ms>
 		/*
@@ -8509,7 +8512,7 @@ FillZerobss:
 
 LoopFillZerobss:
   ldr r3, = _ebss
- 8003a2c:	200000dc 	.word	0x200000dc
+ 8003a2c:	200000d0 	.word	0x200000d0
 
 08003a30 <ADC1_IRQHandler>:
  * @retval : None

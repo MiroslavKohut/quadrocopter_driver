@@ -44,9 +44,9 @@ int main(void)
 	timers_init();
 
 	/* Wait 5sec for complete calibration and controller setup */
-    delay_ms(5000);
+	delay_ms(5000);
 
-    while(1)
+	while(1)
 	{
 		/*
 		 * Main loop, regulation and whole control is handled in timers and interrupts

@@ -63,7 +63,6 @@ pulse_length_yaw    0x2               src\communication\rx.o
 acc_divider         0x4               src\device_libraries\MPU_9250.o
 current_throttle    0x1               src\device_libraries\motor_control.o
 IC2Value            0x4               src\communication\rx.o
-gyroscope_angle     0xc               src\device_libraries\MPU_9250.o
 
 Discarded input sections
 
@@ -2132,7 +2131,7 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib
  .igot.plt      0x2000003c        0x0 c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7-m/crtbegin.o
                 0x2000003c                . = ALIGN (0x4)
 
-.bss            0x2000003c       0xa0 load address 0x080042e8
+.bss            0x2000003c       0x94 load address 0x080042e8
                 0x2000003c                _sbss = .
                 0x2000003c                __bss_start__ = _sbss
  *(.bss)
@@ -2148,35 +2147,34 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib
                 0x2000006c                IC2Value
  COMMON         0x20000070        0x4 src\communication\usart.o
                 0x20000070                rec_data
- COMMON         0x20000074       0x38 src\device_libraries\MPU_9250.o
+ COMMON         0x20000074       0x2c src\device_libraries\MPU_9250.o
                 0x20000074                accelerometer_data
                 0x20000080                calib_data
                 0x2000008c                gyroscope_data
                 0x20000098                gyro_divider
                 0x2000009c                acc_divider
-                0x200000a0                gyroscope_angle
- COMMON         0x200000ac       0x30 src\functions.o
-                0x200000ac                desired_pitch
-                0x200000b0                desired_yaw
-                0x200000b4                desired_roll
-                0x200000b8                accelerometer_data_avg
-                0x200000c4                gyroscope_data_avg
-                0x200000d0                yaw
-                0x200000d4                pitch
-                0x200000d8                roll
-                0x200000dc                . = ALIGN (0x4)
-                0x200000dc                _ebss = .
-                0x200000dc                __bss_end__ = _ebss
+ COMMON         0x200000a0       0x30 src\functions.o
+                0x200000a0                desired_pitch
+                0x200000a4                desired_yaw
+                0x200000a8                desired_roll
+                0x200000ac                accelerometer_data_avg
+                0x200000b8                gyroscope_data_avg
+                0x200000c4                yaw
+                0x200000c8                pitch
+                0x200000cc                roll
+                0x200000d0                . = ALIGN (0x4)
+                0x200000d0                _ebss = .
+                0x200000d0                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x200000dc      0x400 load address 0x080042e8
-                0x200000dc                . = ALIGN (0x4)
+                0x200000d0      0x400 load address 0x080042e8
+                0x200000d0                . = ALIGN (0x4)
                 [!provide]                PROVIDE (end, .)
                 [!provide]                PROVIDE (_end, .)
-                0x200000dc                . = (. + _Min_Heap_Size)
-                0x200004dc                . = (. + _Min_Stack_Size)
- *fill*         0x200000dc      0x400 
-                0x200004dc                . = ALIGN (0x4)
+                0x200000d0                . = (. + _Min_Heap_Size)
+                0x200004d0                . = (. + _Min_Stack_Size)
+ *fill*         0x200000d0      0x400 
+                0x200004d0                . = ALIGN (0x4)
 
 .memory_b1_text
  *(.mb1text)
@@ -2264,7 +2262,7 @@ LOAD c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib
                 0x000005ae       0x1d c:/program files (x86)/atollic/truestudio for arm 6.0.0/armtools/bin/../lib/gcc/arm-atollic-eabi/5.3.1/armv7-m/crtn.o
 OUTPUT(quadrocopter_driver.elf elf32-littlearm)
 
-.debug_info     0x00000000     0x7b0f
+.debug_info     0x00000000     0x7adc
  .debug_info    0x00000000      0x55a Libraries\STM32L1xx_StdPeriph_Driver\src\misc.o
  .debug_info    0x0000055a      0x65f Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
  .debug_info    0x00000bb9      0xa29 Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.o
@@ -2275,13 +2273,13 @@ OUTPUT(quadrocopter_driver.elf elf32-littlearm)
  .debug_info    0x00004864      0x846 src\communication\rx.o
  .debug_info    0x000050aa      0x586 src\communication\spi.o
  .debug_info    0x00005630      0x72a src\communication\usart.o
- .debug_info    0x00005d5a      0x333 src\device_libraries\MPU_9250.o
- .debug_info    0x0000608d      0x6a3 src\device_libraries\motor_control.o
- .debug_info    0x00006730      0x996 src\functions.o
- .debug_info    0x000070c6      0x31f src\main.o
- .debug_info    0x000073e5       0x8f src\startup_stm32l1xx_hd.o
- .debug_info    0x00007474      0x133 src\stm32l1xx_it.o
- .debug_info    0x000075a7      0x568 src\system_stm32l1xx.o
+ .debug_info    0x00005d5a      0x322 src\device_libraries\MPU_9250.o
+ .debug_info    0x0000607c      0x6a3 src\device_libraries\motor_control.o
+ .debug_info    0x0000671f      0x985 src\functions.o
+ .debug_info    0x000070a4      0x30e src\main.o
+ .debug_info    0x000073b2       0x8f src\startup_stm32l1xx_hd.o
+ .debug_info    0x00007441      0x133 src\stm32l1xx_it.o
+ .debug_info    0x00007574      0x568 src\system_stm32l1xx.o
 
 .debug_abbrev   0x00000000     0x1658
  .debug_abbrev  0x00000000      0x149 Libraries\STM32L1xx_StdPeriph_Driver\src\misc.o
@@ -2376,7 +2374,7 @@ OUTPUT(quadrocopter_driver.elf elf32-littlearm)
  .debug_line    0x0000329b      0x1e8 src\stm32l1xx_it.o
  .debug_line    0x00003483      0x21a src\system_stm32l1xx.o
 
-.debug_str      0x00000000     0x290c
+.debug_str      0x00000000     0x28fc
  .debug_str     0x00000000      0x3dc Libraries\STM32L1xx_StdPeriph_Driver\src\misc.o
                                 0x429 (size before relaxing)
  .debug_str     0x000003dc      0x33a Libraries\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.o
@@ -2397,17 +2395,17 @@ OUTPUT(quadrocopter_driver.elf elf32-littlearm)
                                 0x525 (size before relaxing)
  .debug_str     0x00002326       0xa0 src\communication\usart.o
                                 0x8e8 (size before relaxing)
- .debug_str     0x000023c6      0x10a src\device_libraries\MPU_9250.o
-                                0x2f4 (size before relaxing)
- .debug_str     0x000024d0       0xbd src\device_libraries\motor_control.o
+ .debug_str     0x000023c6       0xfa src\device_libraries\MPU_9250.o
+                                0x2e4 (size before relaxing)
+ .debug_str     0x000024c0       0xbd src\device_libraries\motor_control.o
                                 0x5c6 (size before relaxing)
- .debug_str     0x0000258d      0x1fc src\functions.o
-                                0xa03 (size before relaxing)
- .debug_str     0x00002789       0x3f src\main.o
-                                0x326 (size before relaxing)
- .debug_str     0x000027c8       0xa6 src\stm32l1xx_it.o
+ .debug_str     0x0000257d      0x1fc src\functions.o
+                                0x9f3 (size before relaxing)
+ .debug_str     0x00002779       0x3f src\main.o
+                                0x316 (size before relaxing)
+ .debug_str     0x000027b8       0xa6 src\stm32l1xx_it.o
                                 0x236 (size before relaxing)
- .debug_str     0x0000286e       0x9e src\system_stm32l1xx.o
+ .debug_str     0x0000285e       0x9e src\system_stm32l1xx.o
                                 0x395 (size before relaxing)
 
 .comment        0x00000000       0x7e
@@ -3384,9 +3382,6 @@ g_pfnVectors                                      src\startup_stm32l1xx_hd.o
 global_init                                       src\functions.o
                                                   src\main.o
 gyro_divider                                      src\main.o
-                                                  src\functions.o
-                                                  src\device_libraries\MPU_9250.o
-gyroscope_angle                                   src\main.o
                                                   src\functions.o
                                                   src\device_libraries\MPU_9250.o
 gyroscope_data                                    src\main.o

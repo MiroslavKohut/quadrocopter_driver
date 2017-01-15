@@ -24,6 +24,8 @@ void init_SPI1(void){
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_SPI1);
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
 
+	/* Chipselect */
+
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
