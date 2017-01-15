@@ -17,9 +17,9 @@ PITCH AND ROLL stabilization testing
 https://www.youtube.com/watch?v=z78SoeCwCng
 
 # Institute
-Slovak University of Technology in Bratislava (STU)
-Faculty of Electrical Engineering and Information Technology 
-Institute of robotics and cybernetics (ÚRK)
+Slovak University of Technology in Bratislava (STU)                                                                 
+Faculty of Electrical Engineering and Information Technology                                                            
+Institute of Robotics and Cybernetics (ÚRK)
 
 # LICENCE
 The MIT License (MIT)
