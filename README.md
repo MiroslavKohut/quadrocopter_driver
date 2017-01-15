@@ -5,8 +5,8 @@ User documentation (Užívateľská dokumentácia)
 https://github.com/MiroslavKohut/quadrocopter_driver/blob/master/Documentation/important/Uzivatelska_dokumentacia_k_zaver_projektu_kvadrokoptera.pdf
 
 # quadrocopter_driver
-This repository contains experimental code for PID quadrocopter control using MPU9250 and radio control. Yaw axis is tested and calibrated
-Pitch and roll axis are prepared for PID calibration. For yaw axis control we are using P regulator with raw data from gyroscope filtered with moveing average Filter
+This repository contains experimental code for PID quadrocopter control using MPU9250 and radio control. Yaw axis is tested and calibrated.
+Pitch and roll axis are prepared for PID calibration. For yaw axis control we are using P regulator with raw data from gyroscope filtered with Moveing average filter.
 We also implemented complementary filter for pitch and roll rotation. Filtering of data works fine but Controller still needs a better calibration and testing.
 We do not suggest to edit the code. Only at your own risk.
 
@@ -15,6 +15,11 @@ YAW stabilization
 https://www.youtube.com/watch?v=hHbUFp_3BBc                                                                     
 PITCH AND ROLL stabilization testing                                                                                       
 https://www.youtube.com/watch?v=z78SoeCwCng
+
+# Institute
+Slovak University of Technology in Bratislava (STU)
+Faculty of Electrical Engineering and Information Technology 
+Institute of robotics and cybernetics (ÚRK)
 
 # LICENCE
 The MIT License (MIT)
