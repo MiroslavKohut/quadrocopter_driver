@@ -11,8 +11,10 @@
 void rx_init(){
 
 	IC2Value = 0;
-	DutyCycle = 0.0;
-	Frequency = 0;
+	dutyCycle_throttle = 0.0;
+	dutyCycle_yaw = 0.0;
+	frequency_throttle = 0;
+	frequency_yaw = 0;
 	pulse_length_throttle=0;
 	pulse_length_yaw=0;
 
@@ -106,16 +108,16 @@ void TIM9_IRQHandler(void)
 	  if (IC2Value != 0)
 	  {
 		/* Duty cycle computation */
-		DutyCycle = (TIM_GetCapture1(TIM9) * 100) / IC2Value;
+		dutyCycle_throttle = (TIM_GetCapture1(TIM9) * 100) / IC2Value;
 		/* Pulse length computation */
 		pulse_length_throttle = ceil(161 * DutyCycle / 100);
 		/* Frequency computation */
-		Frequency = SystemCoreClock / IC2Value;
+		frequency_throttle = SystemCoreClock / IC2Value;
 	  }
 	  else
 	  {
-		DutyCycle = 0;
-		Frequency = 0;
+		  dutyCycle_throttle = 0;
+		  frequency_throttle = 0;
 	  }
 	}
 }
@@ -132,16 +134,16 @@ void TIM3_IRQHandler(void)
 	  if (IC2Value != 0)
 	  {
 		/* Duty cycle computation */
-		DutyCycle = (TIM_GetCapture1(TIM3) * 100) / IC2Value;
+		dutyCycle_yaw = (TIM_GetCapture1(TIM3) * 100) / IC2Value;
 		/* Pulse length computation */
 		pulse_length_yaw = ceil(161 * DutyCycle / 100);
 		/* Frequency computation */
-		Frequency = SystemCoreClock / IC2Value;
+		frequency_yaw = SystemCoreClock / IC2Value;
 	  }
 	  else
 	  {
-		DutyCycle = 0;
-		Frequency = 0;
+		dutyCycle_yaw = 0;
+		frequency_yaw = 0;
 	  }
 	}
 }

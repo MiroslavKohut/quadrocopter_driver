@@ -16,7 +16,7 @@
 #include <stdint.h>
 #include "stm32l1xx.h"
 
-#define delay_divider_us 1000
+#define delay_divider_ms 1000
 void init_delay();
 void delay_ms(uint32_t t);
 void delay_decrement(void);

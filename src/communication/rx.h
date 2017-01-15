@@ -17,8 +17,10 @@
 #include <communication/rx.h>
 
 __IO float IC2Value;
-__IO float DutyCycle;
-__IO float Frequency;
+__IO float dutyCycle_throttle;
+__IO float dutyCycle_yaw;
+__IO float frequency_throttle;
+__IO float frequency_yaw;
 __IO int16_t pulse_length_throttle;
 __IO int16_t pulse_length_yaw;
 
