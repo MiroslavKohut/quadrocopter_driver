@@ -175,14 +175,18 @@ void complementary_filter()
 void PID_rate_control(){
 
 	int8_t action_throttle_yaw;
-	int8_t action_roll_pitch;
+	int8_t action_throttle_pitch;
+	int8_t action_throttle_roll;
+
 
 	desired_yaw = (float)(pulse_length_yaw - YAW_CONSTANT)*4;
 	desired_pitch = (float)(pulse_length_pitch - PITCH_CONSTANT)*3;
+	desired_roll = (float)(pulse_length_roll - ROLL_CONSTANT)*3;
 
 
 	action_throttle_yaw = (int)(((desired_yaw - gyroscope_data_avg[2])) * KP_yaw);
-	action_roll_pitch = (int)((desired_pitch) * KP_pitch);
+	action_throttle_pitch = (int)(((desired_pitch - gyroscope_data_avg[1])) * KP_pitch);
+	action_throttle_roll = (int)(((desired_roll - gyroscope_data_avg[0])) * KP_roll);
 
 	int32_t controller_throttle = pulse_length_throttle - THROTTLE_CONSTANT;
 
@@ -191,34 +195,30 @@ void PID_rate_control(){
 	else if(action_throttle_yaw < -MAXIMUM_SATURATION_YAW)
 		action_throttle_yaw = -MAXIMUM_SATURATION_YAW;
 
-	if(action_roll_pitch > MAXIMUM_SATURATION_PITCH)
-		action_roll_pitch = MAXIMUM_SATURATION_PITCH;
-	else if(action_roll_pitch < -MAXIMUM_SATURATION_PITCH)
-		action_roll_pitch = -MAXIMUM_SATURATION_PITCH;
+	if(action_throttle_pitch > MAXIMUM_SATURATION_PITCH)
+		action_throttle_pitch = MAXIMUM_SATURATION_PITCH;
+	else if(action_throttle_pitch < -MAXIMUM_SATURATION_PITCH)
+		action_throttle_pitch = -MAXIMUM_SATURATION_PITCH;
 
+	if(action_throttle_roll > MAXIMUM_SATURATION_ROLL)
+		action_throttle_roll = MAXIMUM_SATURATION_ROLL;
+	else if(action_throttle_roll < -MAXIMUM_SATURATION_ROLL)
+		action_throttle_roll = -MAXIMUM_SATURATION_ROLL;
 
 	if(controller_throttle > MAX_THROTTLE)
 		controller_throttle = MAX_THROTTLE;
 
-	int32_t help_throttle = action_throttle_yaw + action_roll_pitch;
+	int32_t help_throttle = action_throttle_yaw +action_throttle_roll+ action_throttle_pitch;
 
 	if (controller_throttle + help_throttle > MAX_THROTTLE)
 		controller_throttle = controller_throttle - (controller_throttle + help_throttle - MAX_THROTTLE);
 
 	if (controller_throttle > MINIMUM_SATURATION){
 
-		if (pulse_length_throttle > 150){
-			set_throttle(1,controller_throttle-action_throttle_yaw + action_roll_pitch);
-			set_throttle(2,controller_throttle+action_throttle_yaw - action_roll_pitch);
-			set_throttle(3,controller_throttle-action_throttle_yaw - action_roll_pitch);
-			set_throttle(4,controller_throttle+action_throttle_yaw + action_roll_pitch);
-		}
-		else{
-			set_throttle(1,controller_throttle-action_throttle_yaw - action_roll_pitch);
-			set_throttle(2,controller_throttle+action_throttle_yaw - action_roll_pitch);
-			set_throttle(3,controller_throttle-action_throttle_yaw + action_roll_pitch);
-			set_throttle(4,controller_throttle+action_throttle_yaw + action_roll_pitch);
-		}
+		set_throttle(1,controller_throttle-action_throttle_yaw + action_throttle_pitch - action_throttle_roll);
+		set_throttle(2,controller_throttle+action_throttle_yaw - action_throttle_pitch - action_throttle_roll);
+		set_throttle(3,controller_throttle-action_throttle_yaw - action_throttle_pitch + action_throttle_roll);
+		set_throttle(4,controller_throttle+action_throttle_yaw + action_throttle_pitch + action_throttle_roll);
 	}
 	else
 	{

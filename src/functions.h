@@ -38,6 +38,7 @@
 #define THROTTLE_CONSTANT			100
 #define YAW_CONSTANT				150
 #define PITCH_CONSTANT				150
+#define ROLL_CONSTANT				150
 
 
 /* Constants */
