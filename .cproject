@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
-		<cconfiguration id="com.atollic.truestudio.exe.debug.toolchain.11124011">
-			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.atollic.truestudio.exe.debug.toolchain.11124011" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+		<cconfiguration id="com.atollic.truestudio.exe.debug.toolchain.1367402528">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.atollic.truestudio.exe.debug.toolchain.1367402528" moduleId="org.eclipse.cdt.core.settings" name="Debug">
 				<externalSettings/>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
@@ -12,18 +12,18 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration buildProperties="" id="com.atollic.truestudio.exe.debug.toolchain.11124011" name="Debug" parent="org.eclipse.cdt.build.core.emptycfg">
-					<folderInfo id="com.atollic.truestudio.exe.debug.toolchain.11124011.794952258" name="/" resourcePath="">
-						<toolChain id="com.atollic.truestudio.exe.debug.toolchain.1318081221" name="Atollic ARM Tools" superClass="com.atollic.truestudio.exe.debug.toolchain">
-							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="com.atollic.truestudio.exe.debug.toolchain.platform.1107098927" isAbstract="false" name="Debug platform" superClass="com.atollic.truestudio.exe.debug.toolchain.platform"/>
-							<builder buildPath="${workspace_loc:/quadrocopter_driver}/Debug" id="com.atollic.truestudio.mbs.builder1.389351076" managedBuildOn="false" name="CDT Internal Builder.Debug" superClass="com.atollic.truestudio.mbs.builder1"/>
-							<tool id="com.atollic.truestudio.exe.debug.toolchain.as.41298094" name="Assembler" superClass="com.atollic.truestudio.exe.debug.toolchain.as"/>
-							<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1247762050" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc"/>
-							<tool id="com.atollic.truestudio.exe.debug.toolchain.ld.1712610075" name="C Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ld"/>
-							<tool id="com.atollic.truestudio.exe.debug.toolchain.gpp.1935022890" name="C++ Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gpp"/>
-							<tool id="com.atollic.truestudio.exe.debug.toolchain.ldcc.63217125" name="C++ Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ldcc"/>
-							<tool id="com.atollic.truestudio.ar.base.814170248" name="Archiver" superClass="com.atollic.truestudio.ar.base"/>
-							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.861661084" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput"/>
+				<configuration buildProperties="" id="com.atollic.truestudio.exe.debug.toolchain.1367402528" name="Debug" parent="org.eclipse.cdt.build.core.emptycfg">
+					<folderInfo id="com.atollic.truestudio.exe.debug.toolchain.1367402528.1735494625" name="/" resourcePath="">
+						<toolChain id="com.atollic.truestudio.exe.debug.toolchain.2020710484" name="Atollic ARM Tools" superClass="com.atollic.truestudio.exe.debug.toolchain">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="com.atollic.truestudio.exe.debug.toolchain.platform.237140980" isAbstract="false" name="Debug platform" superClass="com.atollic.truestudio.exe.debug.toolchain.platform"/>
+							<builder buildPath="${workspace_loc:/quadrocopter_driver}/Debug" id="com.atollic.truestudio.mbs.builder1.2088447069" managedBuildOn="false" name="CDT Internal Builder.Debug" superClass="com.atollic.truestudio.mbs.builder1"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.as.770445087" name="Assembler" superClass="com.atollic.truestudio.exe.debug.toolchain.as"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1724153999" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.ld.1717206583" name="C Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ld"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.gpp.1996281526" name="C++ Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gpp"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.ldcc.806167604" name="C++ Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ldcc"/>
+							<tool id="com.atollic.truestudio.ar.base.993143021" name="Archiver" superClass="com.atollic.truestudio.ar.base"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.974961941" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput"/>
 						</toolChain>
 					</folderInfo>
 				</configuration>
@@ -35,7 +35,7 @@
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="quadrocopter_driver.null.600841829" name="quadrocopter_driver"/>
+		<project id="quadrocopter_driver.null.2053283813" name="quadrocopter_driver"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 </cproject>

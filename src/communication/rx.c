@@ -110,7 +110,7 @@ void TIM9_IRQHandler(void)
 		/* Duty cycle computation */
 		dutyCycle_throttle = (TIM_GetCapture1(TIM9) * 100) / IC2Value;
 		/* Pulse length computation */
-		pulse_length_throttle = ceil(161 * DutyCycle / 100);
+		pulse_length_throttle = ceil(161 * dutyCycle_throttle / 100);
 		/* Frequency computation */
 		frequency_throttle = SystemCoreClock / IC2Value;
 	  }
@@ -136,7 +136,7 @@ void TIM3_IRQHandler(void)
 		/* Duty cycle computation */
 		dutyCycle_yaw = (TIM_GetCapture1(TIM3) * 100) / IC2Value;
 		/* Pulse length computation */
-		pulse_length_yaw = ceil(161 * DutyCycle / 100);
+		pulse_length_yaw = ceil(161 * dutyCycle_yaw / 100);
 		/* Frequency computation */
 		frequency_yaw = SystemCoreClock / IC2Value;
 	  }
