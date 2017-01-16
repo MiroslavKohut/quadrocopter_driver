@@ -14,7 +14,7 @@ We do not suggest to edit the code. Only at your own risk.
 YAW stabilization                                                                                                        
 https://www.youtube.com/watch?v=hHbUFp_3BBc                                                                     
 PITCH AND ROLL stabilization testing                                                                                       
-https://www.youtube.com/watch?v=z78SoeCwCng
+https://www.youtube.com/watch?v=z78SoeCwCng</br>
 Final version with PID_rate_ontrol() function. Function uses P regulator for controlling yaw pitch and roll axes with data from gyro. Control with complementary filter still not implemented.                                                      
 https://www.youtube.com/watch?v=ThWYx58hug0&feature=youtu.be
 
