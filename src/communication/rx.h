@@ -19,10 +19,13 @@
 __IO float IC2Value;
 __IO float dutyCycle_throttle;
 __IO float dutyCycle_yaw;
+__IO float dutyCycle_pitch;
 __IO float frequency_throttle;
 __IO float frequency_yaw;
+__IO float frequency_pitch;
 __IO int16_t pulse_length_throttle;
 __IO int16_t pulse_length_yaw;
+__IO int16_t pulse_length_pitch;
 
 void NVIC_init(void);
 void Timer_init(void);

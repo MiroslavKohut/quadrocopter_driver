@@ -13,10 +13,13 @@ void rx_init(){
 	IC2Value = 0;
 	dutyCycle_throttle = 0.0;
 	dutyCycle_yaw = 0.0;
+	dutyCycle_pitch = 0.0;
 	frequency_throttle = 0;
 	frequency_yaw = 0;
+	frequency_pitch = 0.0;
 	pulse_length_throttle=0;
 	pulse_length_yaw=0;
+	pulse_length_pitch=0;
 
 	NVIC_init();
 	GPIO_init();
@@ -37,6 +40,12 @@ void NVIC_init(void)
  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
  	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
  	NVIC_Init(&NVIC_InitStructure);
+ 	//nove
+ 	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+ 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 	NVIC_Init(&NVIC_InitStructure);
 }
 
 void Timer_init(void)
@@ -45,6 +54,7 @@ void Timer_init(void)
 	TIM_ICInitTypeDef  TIM_ICInitStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 
     TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
     TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
@@ -65,6 +75,14 @@ void Timer_init(void)
     TIM_SelectMasterSlaveMode(TIM9,TIM_MasterSlaveMode_Enable);
     TIM_ITConfig(TIM9, TIM_IT_CC2, ENABLE);
     TIM_Cmd(TIM9, ENABLE);
+
+    //nove
+    TIM_PWMIConfig(TIM4, &TIM_ICInitStructure);
+    TIM_SelectInputTrigger(TIM4, TIM_TS_TI2FP2);
+    TIM_SelectSlaveMode(TIM4, TIM_SlaveMode_Reset);
+    TIM_SelectMasterSlaveMode(TIM4,TIM_MasterSlaveMode_Enable);
+    TIM_ITConfig(TIM4, TIM_IT_CC2, ENABLE);
+    TIM_Cmd(TIM4, ENABLE);
 }
 
 void GPIO_init(void)
@@ -95,6 +113,14 @@ void GPIO_init(void)
     GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM3);
     GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+    GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_7;
+    GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_40MHz;
+    GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_UP ;
+
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_TIM4);
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
 void TIM9_IRQHandler(void)
@@ -144,6 +170,32 @@ void TIM3_IRQHandler(void)
 	  {
 		dutyCycle_yaw = 0;
 		frequency_yaw = 0;
+	  }
+	}
+}
+
+void TIM4_IRQHandler(void)
+{
+
+	if (TIM_GetITStatus(TIM4, TIM_IT_CC2) != RESET)
+	{
+	  TIM_ClearFlag(TIM4, TIM_IT_CC2);
+	  TIM_ClearITPendingBit(TIM4, TIM_IT_CC1);
+	  IC2Value = TIM_GetCapture2(TIM4);
+
+	  if (IC2Value != 0)
+	  {
+		/* Duty cycle computation */
+		dutyCycle_pitch = (TIM_GetCapture1(TIM4) * 100) / IC2Value;
+		/* Pulse length computation */
+		pulse_length_pitch = ceil(161 * dutyCycle_pitch / 100);
+		/* Frequency computation */
+		frequency_pitch = SystemCoreClock / IC2Value;
+	  }
+	  else
+	  {
+		dutyCycle_pitch = 0;
+		frequency_pitch = 0;
 	  }
 	}
 }

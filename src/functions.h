@@ -66,15 +66,15 @@ void global_init();
 void timers_init();
 
 /* Timer inits */
-void TIM4_controller_timer(int period_in_miliseconds);
-void TIM5_sampling_timer(int period_in_miliseconds);
+void TIM5_controller_timer(int period_in_miliseconds);
+void TIM6_sampling_timer(int period_in_miliseconds);
 
 /* Filter Roll/Pitch */
 void complementary_filter();
 
 /*Controller functions*/
 void PID_stabilization_control();
-void PID_yaw_control();
+void PID_rate_control();
 void PID_pitch_control();
 void PID_roll_control();
 

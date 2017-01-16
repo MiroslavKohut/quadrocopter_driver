@@ -52,43 +52,14 @@ void global_init(){
 /* Global main timer initialization */
 void timers_init(){
     //sampling timer
-    TIM5_sampling_timer(moveing_average_sampling*1000);
+    TIM6_sampling_timer(moveing_average_sampling*1000);
     delay_ms(moveing_average_sampling*1000*moveing_average_samples);
 
     //integrating and controller timer
-    TIM4_controller_timer(angle_sampling*1000);
+    TIM5_controller_timer(angle_sampling*1000);
 }
 
-void TIM4_controller_timer(int period_in_miliseconds)
-{
-	uint32_t SystemTimeClock = DEFAULT_FREQUENCY;
-	unsigned short inputPeriodValue = INPUT_CLOCK;
-	unsigned short prescalerValue = (unsigned short) (SystemTimeClock / inputPeriodValue) - 1;
-
-	/*Structure for timer settings*/
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-	TIM_TimeBaseStructure.TIM_Period = period_in_miliseconds*10 - 1;		// 10 period * 0,0001s = 0,001s = 1ms vzorkovaci cas
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseStructure.TIM_Prescaler = prescalerValue;
-	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
-
-	/* TIM Interrupts enable */
-	TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
-	TIM_Cmd(TIM4, ENABLE);
-
-	NVIC_InitTypeDef NVIC_InitStructure;
-
-	/* Enable the TIM4 gloabal Interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-}
-
-void TIM5_sampling_timer(int period_in_miliseconds)
+void TIM5_controller_timer(int period_in_miliseconds)
 {
 	uint32_t SystemTimeClock = DEFAULT_FREQUENCY;
 	unsigned short inputPeriodValue = INPUT_CLOCK;
@@ -102,31 +73,46 @@ void TIM5_sampling_timer(int period_in_miliseconds)
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseStructure.TIM_Prescaler = prescalerValue;
 	TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
+
 	/* TIM Interrupts enable */
 	TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);
 	TIM_Cmd(TIM5, ENABLE);
 
 	NVIC_InitTypeDef NVIC_InitStructure;
+
 	/* Enable the TIM5 gloabal Interrupt */
 	NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-void TIM4_IRQHandler()
+void TIM6_sampling_timer(int period_in_miliseconds)
 {
-    if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
-    {
-        TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+	uint32_t SystemTimeClock = DEFAULT_FREQUENCY;
+	unsigned short inputPeriodValue = INPUT_CLOCK;
+	unsigned short prescalerValue = (unsigned short) (SystemTimeClock / inputPeriodValue) - 1;
 
-        complementary_filter();
-        /* For another controller testing you can add specific controller function*/
-        PID_yaw_control();
-        //PID_pitch_control();
-        //PID_stabilization_control();
-    }
+	/*Structure for timer settings*/
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
+	TIM_TimeBaseStructure.TIM_Period = period_in_miliseconds*10 - 1;		// 10 period * 0,0001s = 0,001s = 1ms vzorkovaci cas
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseStructure.TIM_Prescaler = prescalerValue;
+	TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure);
+	/* TIM Interrupts enable */
+	TIM_ITConfig(TIM6, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM6, ENABLE);
+
+	NVIC_InitTypeDef NVIC_InitStructure;
+	/* Enable the TIM6 gloabal Interrupt */
+	NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
 }
 
 void TIM5_IRQHandler()
@@ -134,6 +120,20 @@ void TIM5_IRQHandler()
     if (TIM_GetITStatus(TIM5, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
+
+        complementary_filter();
+        /* For another controller testing you can add specific controller function*/
+        PID_rate_control();
+        //PID_pitch_control();
+        //PID_stabilization_control();
+    }
+}
+
+void TIM6_IRQHandler()
+{
+    if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)
+    {
+        TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
         /* reading data from imu with specific sample rate and implementing moveing average with specific number of samples */
         read_rot();
         for(uint8_t i = 0;i<3;i++){
@@ -172,7 +172,7 @@ void complementary_filter()
 }
 
 /* Yaw controller tested */
-void PID_yaw_control(){
+void PID_rate_control(){
 
 	int8_t action_throttle_yaw;
 
