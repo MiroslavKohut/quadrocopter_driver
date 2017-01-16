@@ -3,8 +3,6 @@ Program documentation (Programová dokumentácia)
 https://github.com/MiroslavKohut/quadrocopter_driver/blob/master/Documentation/important/Programova_dokumentacia.pdf
 User documentation (Užívateľská dokumentácia)                                                                                       
 https://github.com/MiroslavKohut/quadrocopter_driver/blob/master/Documentation/important/Uzivatelska_dokumentacia_k_zaver_projektu_kvadrokoptera.pdf </br>
-Final version with PID_rate_ontrol() function. Function uses P regulator for controlling yaw pitch and roll axes with data from gyro. Control with complementary filter still not implemented.                                                      
-https://www.youtube.com/watch?v=ThWYx58hug0&feature=youtu.be
 
 # quadrocopter_driver
 This repository contains experimental code for PID quadrocopter control using MPU9250 and radio control. Yaw axis is tested and calibrated.
@@ -17,6 +15,9 @@ YAW stabilization
 https://www.youtube.com/watch?v=hHbUFp_3BBc                                                                     
 PITCH AND ROLL stabilization testing                                                                                       
 https://www.youtube.com/watch?v=z78SoeCwCng
+Final version with PID_rate_ontrol() function. Function uses P regulator for controlling yaw pitch and roll axes with data from gyro. Control with complementary filter still not implemented.                                                      
+https://www.youtube.com/watch?v=ThWYx58hug0&feature=youtu.be
+
 
 # Institute
 Slovak University of Technology in Bratislava (STU)                                                                 
