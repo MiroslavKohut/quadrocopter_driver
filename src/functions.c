@@ -175,9 +175,15 @@ void complementary_filter()
 void PID_rate_control(){
 
 	int8_t action_throttle_yaw;
+	int8_t action_roll_pitch;
 
 	desired_yaw = (float)(pulse_length_yaw - YAW_CONSTANT)*4;
+	desired_pitch = (float)(pulse_length_pitch - PITCH_CONSTANT)*3;
+
+
 	action_throttle_yaw = (int)(((desired_yaw - gyroscope_data_avg[2])) * KP_yaw);
+	action_roll_pitch = (int)((desired_pitch) * KP_pitch);
+
 	int32_t controller_throttle = pulse_length_throttle - THROTTLE_CONSTANT;
 
 	if(action_throttle_yaw > MAXIMUM_SATURATION_YAW)
@@ -185,18 +191,34 @@ void PID_rate_control(){
 	else if(action_throttle_yaw < -MAXIMUM_SATURATION_YAW)
 		action_throttle_yaw = -MAXIMUM_SATURATION_YAW;
 
+	if(action_roll_pitch > MAXIMUM_SATURATION_PITCH)
+		action_roll_pitch = MAXIMUM_SATURATION_PITCH;
+	else if(action_roll_pitch < -MAXIMUM_SATURATION_PITCH)
+		action_roll_pitch = -MAXIMUM_SATURATION_PITCH;
+
 
 	if(controller_throttle > MAX_THROTTLE)
 		controller_throttle = MAX_THROTTLE;
 
-	if (controller_throttle + action_throttle_yaw > MAX_THROTTLE)
-		controller_throttle = controller_throttle - (controller_throttle + action_throttle_yaw - MAX_THROTTLE);
+	int32_t help_throttle = action_throttle_yaw + action_roll_pitch;
+
+	if (controller_throttle + help_throttle > MAX_THROTTLE)
+		controller_throttle = controller_throttle - (controller_throttle + help_throttle - MAX_THROTTLE);
 
 	if (controller_throttle > MINIMUM_SATURATION){
-		set_throttle(1,controller_throttle-action_throttle_yaw);
-		set_throttle(2,controller_throttle+action_throttle_yaw);
-		set_throttle(3,controller_throttle-action_throttle_yaw);
-		set_throttle(4,controller_throttle+action_throttle_yaw);
+
+		if (pulse_length_throttle > 150){
+			set_throttle(1,controller_throttle-action_throttle_yaw + action_roll_pitch);
+			set_throttle(2,controller_throttle+action_throttle_yaw - action_roll_pitch);
+			set_throttle(3,controller_throttle-action_throttle_yaw - action_roll_pitch);
+			set_throttle(4,controller_throttle+action_throttle_yaw + action_roll_pitch);
+		}
+		else{
+			set_throttle(1,controller_throttle-action_throttle_yaw - action_roll_pitch);
+			set_throttle(2,controller_throttle+action_throttle_yaw - action_roll_pitch);
+			set_throttle(3,controller_throttle-action_throttle_yaw + action_roll_pitch);
+			set_throttle(4,controller_throttle+action_throttle_yaw + action_roll_pitch);
+		}
 	}
 	else
 	{

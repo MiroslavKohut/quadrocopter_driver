@@ -17,6 +17,8 @@
 #include <communication/rx.h>
 
 __IO float IC2Value;
+__IO float IC2Value_roll;
+__IO float IC2Value_yaw;
 __IO float dutyCycle_throttle;
 __IO float dutyCycle_yaw;
 __IO float dutyCycle_pitch;
@@ -26,6 +28,10 @@ __IO float frequency_pitch;
 __IO int16_t pulse_length_throttle;
 __IO int16_t pulse_length_yaw;
 __IO int16_t pulse_length_pitch;
+
+__IO float dutyCycle_roll;
+__IO float frequency_roll;
+__IO int16_t pulse_length_roll;
 
 void NVIC_init(void);
 void Timer_init(void);

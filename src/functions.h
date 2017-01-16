@@ -30,13 +30,15 @@
 /* Controller configurations */
 
 #define MAXIMUM_SATURATION_YAW		15
-#define MAXIMUM_SATURATION_PITCH	20
+#define MAXIMUM_SATURATION_PITCH	15
 #define MAXIMUM_SATURATION_ROLL		20
 
 #define MINIMUM_SATURATION			5
 
 #define THROTTLE_CONSTANT			100
 #define YAW_CONSTANT				150
+#define PITCH_CONSTANT				150
+
 
 /* Constants */
 #define M_PI_deg 					180/M_PI

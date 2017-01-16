@@ -52,7 +52,7 @@ int main(void)
 		 * Main loop, regulation and whole control is handled in timers and interrupts
 		 * This loop is only used for debugging
 		 */
-		USART_send_function_number(pulse_length_pitch);
+		//USART_send_function_number(pulse_length_pitch);
 	}
 	return 0;
 }
